@@ -16,8 +16,5 @@ bnlearn-4.7
 ## Tutorial
 https://github.com/Lan-lab/CausFate/tree/main/tutorials
 
-## Inferring causal cellular networks
-![Fig1_副本](https://github.com/Lan-lab/CausFate/assets/21097400/89965927-8987-40c0-9054-40c24366e1d9)
-
-## Identifying cell fate-determining features
-![Fig1_副本2](https://github.com/Lan-lab/CausFate/assets/21097400/0ce9be70-82c9-4e6d-8529-73400f83ae48)
+## Overview of CausFate
+<img width="3090" height="4084" alt="CausFate Overview" src="https://github.com/user-attachments/assets/c8e4dc64-0481-479f-9569-5af100a97a3c" />
