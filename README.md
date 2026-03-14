@@ -13,8 +13,8 @@ R-4.3.3, Matrix-1.6-5, Seurat-5.0.3, bnlearn-4.9.4, doParallel-1.0.17, dplyr-1.1
 `devtools::install_github("https://github.com/Lan-lab/CausFate")`
 
 ## Tutorial
-Here we provide demos for reconstructing causal cell-state networks and ranking potential fate-determining features using both bulk and single-cell datasets: https://github.com/Lan-lab/CausFate/tree/main/tutorials.
-We also provide benchmarking scripts for simulated datasets generated from pre-defined reference causal networks with varying numbers of nodes (3–9) and structural densities (discrete, sparse, tree and dense): https://github.com/Lan-lab/CausFate/tree/main/benchmark
+- Here we provide demos for reconstructing causal cell-state networks and ranking potential fate-determining features using both bulk and single-cell datasets: https://github.com/Lan-lab/CausFate/tree/main/tutorials.
+- We also provide benchmarking scripts for simulated datasets generated from pre-defined reference causal networks with varying numbers of nodes (3–9) and structural densities (discrete, sparse, tree and dense): https://github.com/Lan-lab/CausFate/tree/main/benchmark
 
 ## Overview of CausFate
 <img width="3090" height="4084" alt="CausFate Overview" src="https://github.com/user-attachments/assets/c8e4dc64-0481-479f-9569-5af100a97a3c" />
