@@ -12,8 +12,8 @@ library(ggpubr)
 library(zeallot)
 library(glue)
 
-source("~/CausFate/simulation/simulation_func.R")
-dataset_path <- "~/CausFate/simulation/result/benchmark_repeat"
+source("~/CausFate/benchmark/simulation_func.R")
+dataset_path <- "~/CausFate/benchmark/result"
 
 # 3-discrete --------------------------------------------------------------
 

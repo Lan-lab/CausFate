@@ -19,7 +19,7 @@ generateBayesianParams <- function(ref_net, intercept_coef = 5, parent_coef = 2,
   node_params
 }
 
-generateExpressionSeurat <- function(ref_net, n_feature=500, n_node_smpl=50, n_edge_smpl =100, edge_span = 1.1){
+generateExpressionSeurat <- function(ref_net, n_feature=500, n_node_smpl=500, n_edge_smpl =1000, edge_span = 1.1){
   expressions <- vector(mode="list",length=n_feature)
   
   for(i in 1:n_feature){
@@ -64,7 +64,7 @@ generateExpressionSeurat <- function(ref_net, n_feature=500, n_node_smpl=50, n_e
 colorEdges <- function(net, ref, main=""){
   ref_arcs <- arcs(ref) %>% as.data.frame
   ref_arcs <- paste0(ref_arcs$from,'~',ref_arcs$to)
-  df <- distances(as.igraph(ref_net), mode="out") %>% as.data.frame %>% 
+  df <- distances(as.igraph(ref), mode="out") %>% as.data.frame %>% 
     rownames_to_column("from") %>% pivot_longer(-from, names_to = "to", values_to = "dist") %>%
     mutate(arc = paste0(from,'~',to)) %>% 
     mutate(col = ifelse(arc %in% ref_arcs, 'black', ifelse(is.infinite(dist), 'red', '#C9C9C9')))
@@ -118,7 +118,7 @@ str2bn <- function(arcs_short, plot = T){
 netDiff <- function(net, ref, main=""){
   if(nrow(arcs(ref))!=0){ref_arcs <- arcs(ref) %>% as.data.frame
   ref_arcs <- paste0(ref_arcs$from,'~',ref_arcs$to)}else{ref_arcs = vector(mode="character")}
-  df <- distances(as.igraph(ref_net), mode="out") %>% as.data.frame %>% 
+  df <- distances(as.igraph(ref), mode="out") %>% as.data.frame %>% 
     rownames_to_column("from") %>% pivot_longer(-from, names_to = "to", values_to = "dist") %>%
     mutate(arc = paste0(from,'~',to)) %>% 
     mutate(type = ifelse(arc %in% ref_arcs, 'direct', ifelse(is.infinite(dist), 'wrong', 'indirect')))
