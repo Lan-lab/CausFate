@@ -21,7 +21,8 @@ install.packages("space")
 ```
 If installation of `space` fails, install it from the CRAN Archive instead:
 ```
-install.packages("https://cran.r-project.org/src/contrib/Archive/space/space_0.1-1.1.tar.gz", repos = NULL, type = "source")
+install.packages("https://cran.r-project.org/src/contrib/Archive/space/space_0.1-1.1.tar.gz",
+repos = NULL, type = "source")
 ```
 Finally, install `CausFate`:
 ```
