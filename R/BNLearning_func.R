@@ -9,7 +9,13 @@
 #' @param ugMethod character, determine the method used, usually cmi2ni. Other alternatives including ns/GeneNet/glasso/pcacmi/bayesianglasso
 #'
 #' @return matrix, return the UG method calculation results
-UG_methods <- function(mem, param = 0.2, plot = FALSE, weight = FALSE, ugMethod = "cmi2ni") {
+UG_methods <- function(
+  mem,
+  param = 0.2,
+  plot = FALSE,
+  weight = FALSE,
+  ugMethod = "cmi2ni"
+) {
   if (ugMethod == "GeneNet") {
     ug <- network.GeneNet(expr.data = (mem), fdr = param)
   } else if (ugMethod == "ns") {
@@ -29,10 +35,7 @@ UG_methods <- function(mem, param = 0.2, plot = FALSE, weight = FALSE, ugMethod 
   }
 
   if (plot) {
-    ugPlot(ug,
-      main = paste0(ugMethod, ", para = ", param),
-      weight = weight
-    )
+    ugPlot(ug, main = paste0(ugMethod, ", para = ", param), weight = weight)
   }
   return(ug)
 }
@@ -52,18 +55,31 @@ UG_methods <- function(mem, param = 0.2, plot = FALSE, weight = FALSE, ugMethod 
 #' @param ncores integer,the cores that used to speed up the calculation
 #'
 #' @return A list of net structures of different parameters
-DG_grid <- function(mem, params = c(1:100) / 100, whiteList = NULL, blackList = NULL, root = NULL,
-                    ugMethod = "cmi2ni", dagMethod = "hc", ncores = 1) {
+DG_grid <- function(
+  mem,
+  params = c(1:100) / 100,
+  whiteList = NULL,
+  blackList = NULL,
+  root = NULL,
+  ugMethod = "cmi2ni",
+  dagMethod = "hc",
+  ncores = 1
+) {
   # doParallel::registerDoParallel(cores = ncores)
-  dags <- foreach::foreach(param = params, .combine = c) %do% {
-    tmp <- list()
-    tmp[[1]] <- DG_methods(
-      mem = (mem), param = param, root = root,
-      whiteList = whiteList, blackList = blackList,
-      ugMethod = ugMethod, dagMethod = dagMethod
-    )
-    tmp
-  }
+  dags <- foreach::foreach(param = params, .combine = c) %do%
+    {
+      tmp <- list()
+      tmp[[1]] <- DG_methods(
+        mem = (mem),
+        param = param,
+        root = root,
+        whiteList = whiteList,
+        blackList = blackList,
+        ugMethod = ugMethod,
+        dagMethod = dagMethod
+      )
+      tmp
+    }
   names(dags) <- paste0("param_", params)
   dags
 }
@@ -82,16 +98,37 @@ DG_grid <- function(mem, params = c(1:100) / 100, whiteList = NULL, blackList = 
 #' @param dagMethod character, determine the method that calculate the arc direction, usually hc
 #'
 #' @return The net structure learnt under this parameter and method
-DG_methods <- function(mem, param = 0.2, root = NULL, whiteList = NULL, blackList = NULL, plot = FALSE,
-                       ugMethod = "cmi2ni", dagMethod = "hc") {
+DG_methods <- function(
+  mem,
+  param = 0.2,
+  root = NULL,
+  whiteList = NULL,
+  blackList = NULL,
+  plot = FALSE,
+  ugMethod = "cmi2ni",
+  dagMethod = "hc"
+) {
   "Edges in whiteList and blackList should be in the form of node1~node2"
   ug <- UG_methods((mem), param = param, ugMethod = ugMethod)
   nodes <- colnames((mem))
   blackList <- genBList(ug, nodes = nodes, root = root, blackList = blackList)
   whiteList <- parse_edge_list(whiteList)
-  dag <- get(dagMethod)(as.data.frame(mem), blacklist = blackList, whitelist = whiteList)
-  main <- paste0("method = ", ugMethod, ", ng = ", nrow((mem)), ", param = ", param)
-  if (plot) bnlearn::graphviz.plot(dag, main = main, shape = "circle")
+  dag <- get(dagMethod)(
+    as.data.frame(mem),
+    blacklist = blackList,
+    whitelist = whiteList
+  )
+  main <- paste0(
+    "method = ",
+    ugMethod,
+    ", ng = ",
+    nrow((mem)),
+    ", param = ",
+    param
+  )
+  if (plot) {
+    bnlearn::graphviz.plot(dag, main = main, shape = "circle")
+  }
   dag
 }
 
@@ -113,49 +150,67 @@ DG_methods <- function(mem, param = 0.2, root = NULL, whiteList = NULL, blackLis
 #' @param seed numeric
 #'
 #' @return A list of net structures of different parameters and different sampling
-DG_smpl <- function(dat, frac = 0.3, N_smpl = 10, params = c(1:100) / 100,
-                    whiteList = NULL, blackList = NULL, root = NULL, ugMethod = "cmi2ni",
-                    dagMethod = "hc", ncores = 64, seed = Sys.time()) {
+DG_smpl <- function(
+  dat,
+  frac = 0.3,
+  N_smpl = 10,
+  params = c(1:100) / 100,
+  whiteList = NULL,
+  blackList = NULL,
+  root = NULL,
+  ugMethod = "cmi2ni",
+  dagMethod = "hc",
+  ncores = 64,
+  seed = Sys.time()
+) {
   set.seed(as.numeric(seed))
   meta <- dat@meta.data %>% tibble::rownames_to_column("CellID")
   ctypes <- names(table(meta$celltype))
   random_number <- stats::runif(N_smpl, 1, as.numeric(seed))
 
   doParallel::registerDoParallel(cores = ncores)
-  dags.smpl <- foreach::foreach(i_smpl = 1:N_smpl, .combine = c) %dopar% {
-    set.seed(random_number[i_smpl])
-    smpl.ttl <- 50
-    meta.smpl <- tibble()
-    while (TRUE) {
-      meta.smpl <- meta %>%
-        dplyr::group_by(celltype) %>%
-        dplyr::sample_frac(frac)
-      if (length(unique(meta.smpl$celltype)) == length(ctypes)) break
-      smpl.ttl <- smpl.ttl - 1
-      if (smpl.ttl == 0) stop("Failed sampling attempts reach limit: consider if the sampling fraction is too low or wrong dataset!")
+  dags.smpl <- foreach::foreach(i_smpl = 1:N_smpl, .combine = c) %dopar%
+    {
+      set.seed(random_number[i_smpl])
+      smpl.ttl <- 50
+      meta.smpl <- tibble::tibble()
+      while (TRUE) {
+        meta.smpl <- meta %>%
+          dplyr::group_by(celltype) %>%
+          dplyr::sample_frac(frac)
+        if (length(unique(meta.smpl$celltype)) == length(ctypes)) {
+          break
+        }
+        smpl.ttl <- smpl.ttl - 1
+        if (smpl.ttl == 0) {
+          stop(
+            "Failed sampling attempts reach limit: consider if the sampling fraction is too low or wrong dataset!"
+          )
+        }
+      }
+      dat.smpl <- subset(dat, cells = meta.smpl$CellID)
+      meta_tmp <- dat.smpl$celltype
+      tmp <- data.frame(dat.smpl@assays$RNA@data)
+      mem.smpl <- data.frame(matrix(0, nrow = nrow(tmp), ncol = length(ctypes)))
+      colnames(mem.smpl) <- ctypes
+      rownames(mem.smpl) <- rownames(tmp)
+      for (c_t in ctypes) {
+        mem.smpl[c_t] <- tmp[, meta_tmp == c_t, drop = FALSE] %>%
+          rowMeans()
+      }
+      dags <- list()
+      dags[[1]] <- DG_grid(
+        mem.smpl,
+        params = params,
+        whiteList = whiteList,
+        blackList = blackList,
+        root = root,
+        ugMethod = ugMethod,
+        dagMethod = dagMethod,
+        ncores = ncores
+      )
+      dags
     }
-    dat.smpl <- subset(dat, cells = meta.smpl$CellID)
-    meta_tmp <- dat.smpl$celltype
-    tmp <- data.frame(dat.smpl@assays$RNA@data)
-    mem.smpl <- data.frame(matrix(0,
-      nrow = nrow(tmp),
-      ncol = length(ctypes)
-    ))
-    colnames(mem.smpl) <- ctypes
-    rownames(mem.smpl) <- rownames(tmp)
-    for (c_t in ctypes) {
-      mem.smpl[c_t] <- tmp[, meta_tmp == c_t, drop = FALSE] %>%
-        rowMeans()
-    }
-    dags <- list()
-    dags[[1]] <- DG_grid(mem.smpl,
-      params = params,
-      whiteList = whiteList, blackList = blackList,
-      root = root, ugMethod = ugMethod, dagMethod = dagMethod,
-      ncores = ncores
-    )
-    dags
-  }
   dags.smpl
 }
 
@@ -174,6 +229,7 @@ DG_smpl <- function(dat, frac = 0.3, N_smpl = 10, params = c(1:100) / 100,
 #' @param dagMethod character, determine the method that calculate the arc direction, usually hc
 #' @param ncores integer,the cores that used to speed up the calculation
 #' @param mode character, can be 'single_cell' or 'bulk'
+#' @param seed, numeric
 #'
 #' @return A list of net structures of different parameters and different sampling
 #' @export
@@ -183,20 +239,44 @@ DG_smpl <- function(dat, frac = 0.3, N_smpl = 10, params = c(1:100) / 100,
 #' @importFrom foreach %do%
 #' @import bnlearn
 #'
-BNLearning <- function(dat, frac = 0.3, N_smpl = 10, params = c(1:100) / 100,
-                       whiteList = NULL, blackList = NULL, root = NULL,
-                       ugMethod = "cmi2ni", dagMethod = "hc", ncores = 1,
-                       mode = "single_cell") {
+BNLearning <- function(
+  dat,
+  frac = 0.3,
+  N_smpl = 10,
+  params = c(1:100) / 100,
+  whiteList = NULL,
+  blackList = NULL,
+  root = NULL,
+  ugMethod = "cmi2ni",
+  dagMethod = "hc",
+  ncores = 1,
+  mode = "single_cell",
+  seed = Sys.time()
+) {
   if (mode == "single_cell") {
     BNLearn_result <- DG_smpl(
-      dat, frac, N_smpl, params,
-      whiteList, blackList, root,
-      ugMethod, dagMethod, ncores
+      dat,
+      frac,
+      N_smpl,
+      params,
+      whiteList,
+      blackList,
+      root,
+      ugMethod,
+      dagMethod,
+      ncores,
+      seed
     )
   } else if (mode == "bulk") {
     BNLearn_result <- DG_grid(
-      dat, params, whiteList, blackList, root,
-      ugMethod, dagMethod, ncores
+      dat,
+      params,
+      whiteList,
+      blackList,
+      root,
+      ugMethod,
+      dagMethod,
+      ncores
     )
   } else {
     BNLearn_result <- NULL
@@ -226,14 +306,32 @@ BNLearning <- function(dat, frac = 0.3, N_smpl = 10, params = c(1:100) / 100,
 #'
 #' @export
 #'
-learnDAG <- function(dat, frac = 0.3, N_smpl = 10, params = c(1:100) / 100,
-                     whiteList = NULL, blackList = NULL, root = NULL,
-                     ugMethod = "cmi2ni", dagMethod = "hc", ncores = 1,
-                     mode = "single_cell", Emin = 1, Emax = 50) {
-  DAGs <- BNLearning(dat,
-    frac = frac, N_smpl = N_smpl, params = params,
-    whiteList = whiteList, blackList = blackList, root = root,
-    ugMethod = ugMethod, dagMethod = dagMethod, ncores = ncores,
+learnDAG <- function(
+  dat,
+  frac = 0.3,
+  N_smpl = 10,
+  params = c(1:100) / 100,
+  whiteList = NULL,
+  blackList = NULL,
+  root = NULL,
+  ugMethod = "cmi2ni",
+  dagMethod = "hc",
+  ncores = 1,
+  mode = "single_cell",
+  Emin = 1,
+  Emax = 50
+) {
+  DAGs <- BNLearning(
+    dat,
+    frac = frac,
+    N_smpl = N_smpl,
+    params = params,
+    whiteList = whiteList,
+    blackList = blackList,
+    root = root,
+    ugMethod = ugMethod,
+    dagMethod = dagMethod,
+    ncores = ncores,
     mode = mode
   )
   if (mode == "single_cell") {
@@ -243,7 +341,6 @@ learnDAG <- function(dat, frac = 0.3, N_smpl = 10, params = c(1:100) / 100,
     # b = norm_mat(tmp[[1]][ctypes,ctypes]);for (i in 2:length(tmp)) {b = b + norm_mat(tmp[[i]][ctypes,ctypes])}
     # print(b)
     # return(b)
-
 
     # crudeUG <-foreach::foreach(DAG=DAGs,.combine=rbind)%dopar%{rmCyc_sorted(combineDAGs(DAG, Emin = Emin, Emax = Emax))}
     # crudeUG <- crudeUG%>%
@@ -273,8 +370,12 @@ learnDAG <- function(dat, frac = 0.3, N_smpl = 10, params = c(1:100) / 100,
 }
 
 #' @export
-combineAndRmCyc <- function(DAGs,
-                            mode = "single_cell", Emin = NULL, Emax = NULL) {
+combineAndRmCyc <- function(
+  DAGs,
+  mode = "single_cell",
+  Emin = NULL,
+  Emax = NULL
+) {
   if (mode == "single_cell") {
     ctypes <- names(table(dat$celltype))
     # Old method:
@@ -283,10 +384,10 @@ combineAndRmCyc <- function(DAGs,
     # print(b)
     # return(b)
 
-
-    crudeUG <- foreach::foreach(DAG = DAGs, .combine = rbind) %dopar% {
-      rmCyc_sorted(combineDAGs(DAG, Emin = Emin, Emax = Emax))
-    }
+    crudeUG <- foreach::foreach(DAG = DAGs, .combine = rbind) %dopar%
+      {
+        rmCyc_sorted(combineDAGs(DAG, Emin = Emin, Emax = Emax))
+      }
     crudeUG <- crudeUG %>%
       dplyr::group_by(from, to) %>%
       dplyr::summarise(freq = sum(freq)) %>%
@@ -360,11 +461,9 @@ hasCyc <- function(dS) {
 bootstrap_index <- function(meta, bootstrap_times, ratio) {
   celltype <- names(table(meta))
   index <- list(NULL)
-  for (j in 1:bootstrap_times)
-  {
+  for (j in 1:bootstrap_times) {
     index[[j]] <- NA
-    for (i in 1:length(table(meta)))
-    {
+    for (i in 1:length(table(meta))) {
       tmp <- which(meta == celltype[i])
       index[[j]] <- c(index[[j]], sample(tmp, length(tmp) * ratio, replace = F))
     }
@@ -387,9 +486,13 @@ bootstrap_index <- function(meta, bootstrap_times, ratio) {
 #' @export
 combineDAGsmpl <- function(dags.smpl, Emin = NULL, Emax = NULL, ncores = 64) {
   doParallel::registerDoParallel(cores = ncores)
-  Efreqs.tmp <- foreach::foreach(i_smpl = 1:length(dags.smpl), .combine = rbind) %dopar% {
-    combineDAGs(dags.smpl[[i_smpl]], Emin = Emin, Emax = Emax)
-  }
+  Efreqs.tmp <- foreach::foreach(
+    i_smpl = 1:length(dags.smpl),
+    .combine = rbind
+  ) %dopar%
+    {
+      combineDAGs(dags.smpl[[i_smpl]], Emin = Emin, Emax = Emax)
+    }
   Efreqs.tmp %>%
     dplyr::group_by(from, to) %>%
     dplyr::summarise(freq = sum(freq)) %>%
@@ -398,8 +501,6 @@ combineDAGsmpl <- function(dags.smpl, Emin = NULL, Emax = NULL, ncores = 64) {
     tibble::remove_rownames() %>%
     tibble::column_to_rownames("edge")
 }
-
-
 
 
 #' combineDAGs
@@ -413,20 +514,21 @@ combineDAGsmpl <- function(dags.smpl, Emin = NULL, Emax = NULL, ncores = 64) {
 #' @return information of the summarized net structure
 #' @export
 combineDAGs <- function(dags, Emin = NULL, Emax = NULL) {
-  Efreqs <- foreach::foreach(i = 1:length(dags), .combine = rbind) %do% {
-    bool1 <- ifelse(is.null(Emin), TRUE, bnlearn::narcs(dags[[i]]) >= Emin)
-    bool2 <- ifelse(is.null(Emax), TRUE, bnlearn::narcs(dags[[i]]) <= Emax)
-    bool <- bool1 && bool2
-    # bool <- (bnlearn::narcs(dags[[i]]) >= Emin) && (bnlearn::narcs(dags[[i]]) <= Emax)
-    if (isTRUE(bool)) {
-      Efreq <- bnlearn::arcs(dags[[i]]) %>%
-        as.data.frame() %>%
-        dplyr::mutate(freq = 1)
-      Efreq
-    } else {
-      NULL
+  Efreqs <- foreach::foreach(i = 1:length(dags), .combine = rbind) %do%
+    {
+      bool1 <- ifelse(is.null(Emin), TRUE, bnlearn::narcs(dags[[i]]) >= Emin)
+      bool2 <- ifelse(is.null(Emax), TRUE, bnlearn::narcs(dags[[i]]) <= Emax)
+      bool <- bool1 && bool2
+      # bool <- (bnlearn::narcs(dags[[i]]) >= Emin) && (bnlearn::narcs(dags[[i]]) <= Emax)
+      if (isTRUE(bool)) {
+        Efreq <- bnlearn::arcs(dags[[i]]) %>%
+          as.data.frame() %>%
+          dplyr::mutate(freq = 1)
+        Efreq
+      } else {
+        NULL
+      }
     }
-  }
   if (is.null(Efreqs)) {
     return(data.frame(from = character(), to = character(), freq = numeric()))
   }
@@ -451,25 +553,36 @@ combineDAGs <- function(dags, Emin = NULL, Emax = NULL) {
 #'
 #' @return A new bn.fit net structure after filter
 #' @export
-trimDAG <- function(dat_tmp, e, min_arc = 2, max_arc = 4, threshold_value = 0.9, plot = TRUE) {
+trimDAG <- function(
+  dat_tmp,
+  e,
+  min_arc = 2,
+  max_arc = 4,
+  threshold_value = 0.9,
+  plot = TRUE
+) {
   ref <- bnlearn::bn.fit(e, dat_tmp)
   celltype <- names(ref)
   arc_modified <- bnlearn::arcs(ref)
 
   # cutoff & min
-  for (i in celltype)
-  {
+  for (i in celltype) {
     cut_off <- sum(abs(unlist(ref[[i]][4])[-1])) * (1 - threshold_value)
     if (length(unlist(ref[[i]][4])[-1]) == 0) {
       i <- i
     } else if (length(unlist(ref[[i]][4])) < (min_arc + 2)) {
       i <- i
     } else {
-      for (j in 1:length(unlist(ref[[i]][4])[-1]))
-      {
+      for (j in 1:length(unlist(ref[[i]][4])[-1])) {
         if (abs(unlist(ref[[i]][4])[-1])[j] < cut_off) {
-          tmp <- strsplit(names(unlist(ref[[i]][4])[-1])[j], split = "coefficients.")[[1]][2]
-          target <- intersect(which(arc_modified[, "to"] == i), which(arc_modified[, "from"] == tmp))
+          tmp <- strsplit(
+            names(unlist(ref[[i]][4])[-1])[j],
+            split = "coefficients."
+          )[[1]][2]
+          target <- intersect(
+            which(arc_modified[, "to"] == i),
+            which(arc_modified[, "from"] == tmp)
+          )
           arc_modified <- arc_modified[-target, ]
         }
       }
@@ -479,15 +592,21 @@ trimDAG <- function(dat_tmp, e, min_arc = 2, max_arc = 4, threshold_value = 0.9,
   ref <- bnlearn::bn.fit(e, dat_tmp)
 
   # max
-  for (i in celltype)
-  {
+  for (i in celltype) {
     if (length(unlist(ref[[i]][4])[-1]) > max_arc) {
-      cut_off <- as.numeric(sort(abs(unlist(ref[[i]][4])[-1]), decreasing = T)[max_arc])
-      for (j in 1:length(unlist(ref[[i]][4])[-1]))
-      {
+      cut_off <- as.numeric(sort(abs(unlist(ref[[i]][4])[-1]), decreasing = T)[
+        max_arc
+      ])
+      for (j in 1:length(unlist(ref[[i]][4])[-1])) {
         if (abs(unlist(ref[[i]][4])[-1])[j] < cut_off) {
-          tmp <- strsplit(names(unlist(ref[[i]][4])[-1])[j], split = "coefficients.")[[1]][2]
-          target <- intersect(which(arc_modified[, "to"] == i), which(arc_modified[, "from"] == tmp))
+          tmp <- strsplit(
+            names(unlist(ref[[i]][4])[-1])[j],
+            split = "coefficients."
+          )[[1]][2]
+          target <- intersect(
+            which(arc_modified[, "to"] == i),
+            which(arc_modified[, "from"] == tmp)
+          )
           arc_modified <- arc_modified[-target, ]
         }
       }
@@ -617,15 +736,16 @@ setEdges <- function(fromSet, toSet, sep = "~") {
 #' @export
 gem2mem <- function(gem = NULL, meta = NULL, FUN = c("mean", "median")) {
   if (is.null(meta)) {
-    warning("Celltypes information is missing, MEM is identical to input GEM ...")
+    warning(
+      "Celltypes information is missing, MEM is identical to input GEM ..."
+    )
     mem <- gem
   } else {
     celltype <- names(table(meta))
     mem <- data.frame(matrix(0, nrow = nrow(gem), ncol = length(celltype)))
     colnames(mem) <- celltype
     rownames(mem) <- rownames(gem)
-    for (c in celltype)
-    {
+    for (c in celltype) {
       if (FUN == "mean") {
         mem[, c] <- rowMeans(gem[, meta == c])
       } else if (FUN == "median") {
@@ -635,7 +755,6 @@ gem2mem <- function(gem = NULL, meta = NULL, FUN = c("mean", "median")) {
   }
   return(mem)
 }
-
 
 
 #' Generate blacklist
@@ -673,7 +792,8 @@ getNEdges <- function(dags) {
   nEdges <- sapply(
     1:length(dags),
     function(x) bnlearn::narcs(dags[[x]])
-  ) %>% rlang::set_names(names(dags))
+  ) %>%
+    rlang::set_names(names(dags))
   nEdges
 }
 
@@ -695,9 +815,14 @@ df2mat <- function(DAG, ctypes = NULL) {
   DAG.dm <- tidyr::spread(DAG, key = to, value = freq) %>%
     tibble::remove_rownames() %>%
     tibble::column_to_rownames("from") %>%
-    dplyr::mutate(dplyr::across(tidyselect::everything(), .fns = ~ replace_na(., 0)))
+    dplyr::mutate(dplyr::across(
+      tidyselect::everything(),
+      .fns = ~ replace_na(., 0)
+    ))
 
-  if (is.null(ctypes)) ctypes <- union(rownames(DAG.dm), colnames(DAG.dm))
+  if (is.null(ctypes)) {
+    ctypes <- union(rownames(DAG.dm), colnames(DAG.dm))
+  }
   DAG.dm[setdiff(ctypes, rownames(DAG.dm)), ] <- 0
   DAG.dm[, setdiff(ctypes, colnames(DAG.dm))] <- 0
   DAG.dm <- DAG.dm[ctypes, ctypes] %>% as.matrix()
@@ -720,17 +845,21 @@ mat2df <- function(DAG.dm) {
     rlang::set_names(c("to", "from", "freq")) %>%
     subset(freq != 0) %>%
     .[, c("from", "to", "freq")] %>%
-    dplyr::mutate(from = as.character(from), to = as.character(to), edge = paste0(from, "~", to)) %>%
+    dplyr::mutate(
+      from = as.character(from),
+      to = as.character(to),
+      edge = paste0(from, "~", to)
+    ) %>%
     tibble::remove_rownames() %>%
     tibble::column_to_rownames("edge")
   DAG
 }
 
 #' Transform graph structure from data.frame to bn
-#' 
+#'
 #' @param dS data.frame, with columns named `from` and `to`
 #' @param node_names character
-#' 
+#'
 #' @export
 df2bn <- function(dS, node_names, plot = TRUE) {
   e <- bnlearn::empty.graph(node_names)
@@ -749,7 +878,10 @@ getCoef <- function(dag, data) {
     as.data.frame() %>%
     dplyr::mutate(freq = 0)
   for (i in 1:nrow(Efreq)) {
-    Efreq[i, "freq"] <- abs(fit_res[[Efreq[i, "to"]]][["coefficients"]][[Efreq[i, "from"]]])
+    Efreq[i, "freq"] <- abs(fit_res[[Efreq[i, "to"]]][["coefficients"]][[Efreq[
+      i,
+      "from"
+    ]]])
   }
   return(Efreq)
 }
@@ -757,7 +889,12 @@ getCoef <- function(dag, data) {
 #' Filter edges by bn coefficients
 #' @export
 edgeFilter <- function(dag, data, ctypes, threshold = .1) {
-  return(dag %>% getCoef(data) %>% .[.[, "freq"] > threshold, 1:2] %>% df2bn(ctypes, plot = F))
+  return(
+    dag %>%
+      getCoef(data) %>%
+      .[.[, "freq"] > threshold, 1:2] %>%
+      df2bn(ctypes, plot = F)
+  )
 }
 
 # Helper function to parse whitelist/blacklist input
@@ -765,10 +902,10 @@ parse_edge_list <- function(edges) {
   if (is.null(edges)) {
     return(NULL)
   }
-  
+
   if (is.data.frame(edges)) {
     colnames_needed <- c("from", "to")
-    
+
     if (!all(colnames_needed %in% names(edges))) {
       # Assume first two columns are from and to
       if (ncol(edges) < 2) {
@@ -777,16 +914,22 @@ parse_edge_list <- function(edges) {
       edges <- edges[, 1:2]
       names(edges) <- colnames_needed
     }
-    
+
     return(edges)
   } else if (is.character(edges)) {
     # Expecting strings like "A~B"
     split_edges <- strsplit(edges, "~")
     if (any(sapply(split_edges, length) != 2)) {
-      stop("Each string must contain exactly one '~' character separating 'from' and 'to'.")
+      stop(
+        "Each string must contain exactly one '~' character separating 'from' and 'to'."
+      )
     }
     from_to <- do.call(rbind, split_edges)
-    return(data.frame(from = from_to[, 1], to = from_to[, 2], stringsAsFactors = FALSE))
+    return(data.frame(
+      from = from_to[, 1],
+      to = from_to[, 2],
+      stringsAsFactors = FALSE
+    ))
   } else {
     stop("Input must be either a data.frame or a character vector.")
   }

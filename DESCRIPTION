@@ -1,6 +1,6 @@
 Package: causfate
 Title: Inferring causal cell-state transition networks and fate determinants via graphical models and optimal transport
-Version: 1.0.0
+Version: 1.1.0
 Authors@R:
   c(
     person("Longchen", "Xu", email = "xlc17@tsinghua.org.cn", role = c("aut", "cre")),

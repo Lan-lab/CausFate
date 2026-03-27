@@ -288,6 +288,11 @@ MI2 <- function(x, y, z) {
 ### ====================================================== ###
 # The following R scripts are functions to use space to construct gene network.
 
+#' Use space package to predict graph structure
+#' @param expr.data data.frame
+#' @param alpha double
+#'
+#' @return data.frame
 network.space <- function(expr.data, alpha) {
   if (alpha <= 0) {
     stop("Input error: parameter alpha for space should be larger than 0.")

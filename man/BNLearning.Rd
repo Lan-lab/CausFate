@@ -15,7 +15,8 @@ BNLearning(
   ugMethod = "cmi2ni",
   dagMethod = "hc",
   ncores = 1,
-  mode = "single_cell"
+  mode = "single_cell",
+  seed = Sys.time()
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ BNLearning(
 \item{ncores}{integer,the cores that used to speed up the calculation}
 
 \item{mode}{character, can be 'single_cell' or 'bulk'}
+
+\item{seed, }{numeric}
 }
 \value{
 A list of net structures of different parameters and different sampling
