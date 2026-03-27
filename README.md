@@ -10,7 +10,11 @@ R-4.3.3, Matrix-1.6-5, Seurat-5.0.3, bnlearn-4.9.4, doParallel-1.0.17, dplyr-1.1
 ```
 
 ## Installation
-`devtools::install_github("https://github.com/Lan-lab/CausFate")`
+```
+install.packages("BiocManager")
+BiocManager::install(c("graph", "Rgraphviz"))
+devtools::install_github("https://github.com/Lan-lab/CausFate")
+```
 
 ## Tutorial
 Here we provide demos for reconstructing causal cell-state networks and ranking potential fate-determining features using both bulk and single-cell datasets: https://github.com/Lan-lab/CausFate/tree/main/tutorials.
