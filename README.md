@@ -14,10 +14,12 @@ R-4.3.3, Matrix-1.6-5, Seurat-5.0.3, bnlearn-4.9.4, doParallel-1.0.17, dplyr-1.1
 install.packages("BiocManager")
 BiocManager::install(c("graph", "Rgraphviz"))
 ```
-install `space` package `install.packages("space")`
-if the installation of `space` package fails, can use `install.packages("https://cran.r-project.org/src/contrib/Archive/space/space_0.1-1.1.tar.gz")` instead.
+install `space` package 
+```install.packages("space")```
+if the installation of `space` package fails, can use this command instead:
+```install.packages("https://cran.r-project.org/src/contrib/Archive/space/space_0.1-1.1.tar.gz")```
 
-`devtools::install_github("https://github.com/Lan-lab/CausFate")`
+```devtools::install_github("https://github.com/Lan-lab/CausFate")```
 
 
 ## Tutorial
