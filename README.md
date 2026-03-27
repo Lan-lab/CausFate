@@ -10,8 +10,9 @@ R-4.3.3, Matrix-1.6-5, Seurat-5.0.3, bnlearn-4.9.4, doParallel-1.0.17, dplyr-1.1
 ```
 
 ## Installation
-First, install the required Bioconductor dependencies:
+First, install `tidyverse` and the required Bioconductor dependencies:
 ```
+install.packages("tidyverse")
 install.packages("BiocManager")
 BiocManager::install(c("graph", "Rgraphviz"))
 ```
@@ -26,7 +27,8 @@ repos = NULL, type = "source")
 ```
 Finally, install `CausFate`:
 ```
-devtools::install_github("https://github.com/Lan-lab/CausFate")
+install.packages("devtools")
+devtools::install_github("Lan-lab/CausFate")
 ```
 
 
