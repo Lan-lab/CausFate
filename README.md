@@ -15,11 +15,16 @@ install.packages("BiocManager")
 BiocManager::install(c("graph", "Rgraphviz"))
 ```
 install `space` package 
-```install.packages("space")```
+```
+install.packages("space")
+```
 if the installation of `space` package fails, can use this command instead:
-```install.packages("https://cran.r-project.org/src/contrib/Archive/space/space_0.1-1.1.tar.gz")```
-
-```devtools::install_github("https://github.com/Lan-lab/CausFate")```
+```
+install.packages("https://cran.r-project.org/src/contrib/Archive/space/space_0.1-1.1.tar.gz")
+```
+```
+devtools::install_github("https://github.com/Lan-lab/CausFate")
+```
 
 
 ## Tutorial
