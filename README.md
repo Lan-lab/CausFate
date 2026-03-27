@@ -10,18 +10,20 @@ R-4.3.3, Matrix-1.6-5, Seurat-5.0.3, bnlearn-4.9.4, doParallel-1.0.17, dplyr-1.1
 ```
 
 ## Installation
+First, install the required Bioconductor dependencies:
 ```
 install.packages("BiocManager")
 BiocManager::install(c("graph", "Rgraphviz"))
 ```
-install `space` package 
+Then install the `space` package:
 ```
 install.packages("space")
 ```
-if the installation of `space` package fails, can use this command instead:
+If installation of `space` fails, install it from the CRAN Archive instead:
 ```
-install.packages("https://cran.r-project.org/src/contrib/Archive/space/space_0.1-1.1.tar.gz")
+install.packages("https://cran.r-project.org/src/contrib/Archive/space/space_0.1-1.1.tar.gz", repos = NULL, type = "source")
 ```
+Finally, install `CausFate`:
 ```
 devtools::install_github("https://github.com/Lan-lab/CausFate")
 ```
