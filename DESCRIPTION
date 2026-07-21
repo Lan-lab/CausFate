@@ -16,8 +16,9 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Imports: Seurat, SeuratObject, bnlearn, doParallel, dplyr, foreach, MASS,
         corpcor, igraph, graph, magrittr, Matrix, matrixStats, infotheo,
-        parallel, reticulate, Rgraphviz, rlang, str2str, tibble, tidyr,
+        parallel, Rgraphviz, rlang, str2str, tibble, tidyr,
         tidyselect, space, statmod, transport
+Suggests: reticulate
 LinkingTo: Rcpp
 Depends: R (>= 3.5.0)
 LazyData: true
