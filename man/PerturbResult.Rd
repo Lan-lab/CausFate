@@ -15,7 +15,19 @@ PerturbResult(
   mode = "single_cell",
   ncores = 1,
   verbal = F,
-  replace = F
+  replace = F,
+  oracle = NULL,
+  links = NULL,
+  save_dir = NULL,
+  group.by = "celltype",
+  assay = "RNA",
+  layer = "data",
+  genes = NULL,
+  perturb_value = 0,
+  n_propagation = 3,
+  alpha = 10,
+  filter_links = TRUE,
+  overwrite = FALSE
 )
 }
 \arguments{

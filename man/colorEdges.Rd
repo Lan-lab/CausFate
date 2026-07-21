@@ -4,7 +4,15 @@
 \alias{colorEdges}
 \title{colorEdges}
 \usage{
-colorEdges(net, ref, main = "", node_col = NULL)
+colorEdges(
+  net,
+  ref,
+  main = "",
+  node_col = NULL,
+  fontsize = 12,
+  node_size = 0.7,
+  sep = 1.2
+)
 }
 \arguments{
 \item{net}{bn, network to be plotted}
@@ -12,9 +20,14 @@ colorEdges(net, ref, main = "", node_col = NULL)
 \item{ref}{bn, network of reference}
 
 \item{main}{string, title of plot}
-}
-\value{
-plot
+
+\item{node_col}{named vector, colors for the nodes}
+
+\item{fontsize}{numeric, font size for node labels (default 12)}
+
+\item{node_size}{numeric, node diameter in inches (default 0.7)}
+
+\item{sep}{numeric, spacing between nodes (ranksep/nodesep) (default 1.2)}
 }
 \description{
 colorEdges

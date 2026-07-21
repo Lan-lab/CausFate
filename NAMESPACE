@@ -2,6 +2,7 @@
 
 export(BNLearning)
 export(EffectMatrix)
+export(GRNPerturbResult)
 export(PerturbResult)
 export(bootstrap_index)
 export(colorEdges)

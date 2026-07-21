@@ -1,41 +1,278 @@
+#' CellOracle-based GRN perturbation
+#'
+#' @param object Seurat object
+#' @param net_struc Cell-type DAG
+#' @param oracle Preprocessed CellOracle Oracle object
+#' @param links Path to a CellOracle Links file
+#' @param save_dir Directory for intermediate SCM results
+#' @param group.by Cell-type column in Seurat metadata
+#' @param assay Assay used for SCM calculation
+#' @param layer Expression layer used for SCM calculation
+#' @param genes Genes to perturb; NULL uses all available regulatory genes
+#' @param perturb_value Target expression value
+#' @param n_propagation Number of CellOracle propagation steps
+#' @param alpha Ridge coefficient used for GRN fitting
+#' @param filter_links Whether to filter Links before GRN fitting
+#' @param overwrite Whether to overwrite cached results
+#' @param verbal Whether to print progress
+#'
+#' @return A PerturbResult-compatible list
+#' @export
+GRNPerturbResult <- function(
+    object,
+    net_struc,
+    oracle,
+    links,
+    save_dir,
+    group.by = "celltype",
+    assay = "RNA",
+    layer = "data",
+    genes = NULL,
+    perturb_value = 0,
+    n_propagation = 3,
+    alpha = 10,
+    filter_links = TRUE,
+    overwrite = FALSE,
+    verbal = TRUE
+) {
+  if (!inherits(object, "Seurat")) {
+    stop("'object' must be a Seurat object.")
+  }
+
+  if (!group.by %in% colnames(object@meta.data)) {
+    stop("Metadata column '", group.by, "' was not found.")
+  }
+
+  dir.create(save_dir, recursive = TRUE, showWarnings = FALSE)
+
+  data <- SeuratObject::LayerData(
+    object = object,
+    assay = assay,
+    layer = layer
+  )
+
+  meta <- object@meta.data[[group.by]]
+  ctypes <- bnlearn::nodes(net_struc)
+
+  mem.ref <- gem2mem(data, meta, "mean")
+
+  if (!all(ctypes %in% colnames(mem.ref))) {
+    stop("Some DAG nodes are absent from '", group.by, "'.")
+  }
+
+  mem.ref <- mem.ref[, ctypes, drop = FALSE]
+  scm.ref <- get_scm(mem.ref, net_struc, "ref")
+
+  oracle_genes <- reticulate::py_to_r(
+    oracle$adata$var_names$tolist()
+  )
+
+  regulatory_genes <- reticulate::py_to_r(
+    oracle$all_regulatory_genes_in_TFdict
+  )
+
+  available_genes <- Reduce(
+    intersect,
+    list(regulatory_genes, oracle_genes, rownames(mem.ref))
+  )
+
+  if (is.null(genes)) {
+    genes <- available_genes
+  } else {
+    missing_genes <- setdiff(genes, available_genes)
+
+    if (length(missing_genes) > 0) {
+      warning(
+        "Skipped unavailable genes: ",
+        paste(missing_genes, collapse = ", ")
+      )
+    }
+
+    genes <- intersect(genes, available_genes)
+  }
+
+  if (length(genes) == 0) {
+    stop("No valid genes are available for perturbation.")
+  }
+
+  cache_files <- file.path(
+    save_dir,
+    paste0(make.names(genes, unique = TRUE), ".rds")
+  )
+
+  scm.list <- vector("list", length(genes))
+  cached <- file.exists(cache_files) & !overwrite
+
+  scm.list[cached] <- lapply(cache_files[cached], readRDS)
+
+  if (verbal && any(cached)) {
+    message(sum(cached), " cached perturbations loaded.")
+  }
+
+  if (any(!cached)) {
+    celloracle <- reticulate::import(
+      "celloracle",
+      convert = FALSE
+    )
+
+    links.object <- celloracle$load_hdf5(
+      normalizePath(links, winslash = "/", mustWork = TRUE)
+    )
+
+    if (filter_links) {
+      links.object$filter_links()
+    }
+
+    oracle$get_cluster_specific_TFdict_from_Links(
+      links_object = links.object
+    )
+
+    oracle$fit_GRN_for_simulation(
+      GRN_unit = "cluster",
+      alpha = alpha,
+      use_cluster_specific_TFdict = TRUE
+    )
+
+    reticulate::py_run_string(
+      "
+import numpy as np
+
+def _ciber_group_mean(oracle, groupby, levels):
+    matrix = oracle.adata.layers['simulated_count']
+    labels = oracle.adata.obs[groupby].astype(str).to_numpy()
+    result = []
+
+    for level in levels:
+        mean = matrix[labels == str(level)].mean(axis=0)
+        mean = mean.A1 if hasattr(mean, 'A1') else np.asarray(mean).ravel()
+        result.append(mean)
+
+    return np.stack(result, axis=1)
+"
+    )
+
+    py <- reticulate::import_main(convert = FALSE)
+
+    oracle_group.by <- reticulate::py_to_r(
+      oracle$cluster_column_name
+    )
+
+    common_genes <- intersect(
+      rownames(mem.ref),
+      oracle_genes
+    )
+
+    for (i in which(!cached)) {
+      gene <- genes[i]
+
+      if (verbal) {
+        message("[", i, "/", length(genes), "] Perturbing ", gene)
+      }
+
+      condition <- reticulate::dict()
+      condition[[gene]] <- as.numeric(perturb_value)
+
+      oracle$simulate_shift(
+        perturb_condition = condition,
+        GRN_unit = "cluster",
+        n_propagation = as.integer(n_propagation)
+      )
+
+      simulated.mem <- reticulate::py_to_r(
+        py$`_ciber_group_mean`(
+          oracle,
+          oracle_group.by,
+          reticulate::r_to_py(as.list(ctypes))
+        )
+      )
+
+      rownames(simulated.mem) <- oracle_genes
+      colnames(simulated.mem) <- ctypes
+
+      perturb.mem <- mem.ref
+      perturb.mem[common_genes, ] <- simulated.mem[
+        common_genes,
+        ,
+        drop = FALSE
+      ]
+
+      scm.list[[i]] <- get_scm(
+        perturb.mem,
+        net_struc,
+        gene
+      )
+
+      saveRDS(scm.list[[i]], cache_files[i])
+    }
+  }
+
+  scm.inter <- do.call(cbind, scm.list)
+  colnames(scm.inter) <- genes
+
+  list(
+    n_sample = 1L,
+    n_permutation = 1L,
+    ref = list(ref = scm.ref),
+    perturb = list(perturb = scm.inter)
+  )
+}
+
 #' Calculate effect matrix
 #'
-#' When function `PerturbResult` is done, the ouput of `PerturbResult` can be the input of this function to produce effect matrix
+#' Calculate effect matrix from perturbation results.
 #'
-#' @param diffCoeff list of diffCoeff raw result
-#' @param mode character, determine the diffCoeff function, usually "mean"
+#' @param diffBN list of diffBN raw result
+#' @param mode character, determine the diffBN function
 #'
 #' @return Effect matrix
 #' @export
-EffectMatrix <- function(diffCoeff, mode = "mean") {
-  diffCoeff_result <- list(NULL)
-  n_sample <- diffCoeff$n_sample
-  n_permutation <- diffCoeff$n_permutation
+EffectMatrix <- function(diffBN, mode = "mean") {
+  diffBN_result <- list(NULL)
+  n_sample <- diffBN$n_sample
+  n_permutation <- diffBN$n_permutation
   if (mode == "mean") {
     k <- 1
     for (i in 1:(n_sample)) {
       for (j in 1:(n_permutation)) {
-        diffCoeff_result[[k]] <- get_diffCoeff(
-          scm.inter = diffCoeff$perturb[[k]],
-          scm.ref = diffCoeff$ref[[i]],
+        diffBN_result[[k]] <- get_diffCoeff(
+          scm.inter = diffBN$perturb[[k]],
+          scm.ref = diffBN$ref[[i]],
           mode = mode
         )
         k <- k + 1
       }
     }
-    names(diffCoeff_result) <- names(diffCoeff$perturb)
-    tmp <- as.matrix(diffCoeff_result[[1]])
+    names(diffBN_result) <- names(diffBN$perturb)
+    tmp <- as.matrix(diffBN_result[[1]])
     if (n_sample * n_permutation > 1) {
       for (k in 2:(n_sample * n_permutation)) {
-        tmp <- tmp + as.matrix(diffCoeff_result[[k]])
+        tmp <- tmp + as.matrix(diffBN_result[[k]])
       }
     }
-    diffCoeff_result <- tmp
+    diffBN_result <- tmp
+  } else if (mode == "OT") {
+    n_edge <- nrow(diffBN$ref[[1]])
+    n_features <- ncol(diffBN$perturb[[1]])
+    diffBN_ref <- str2str::ld2a(diffBN$ref) %>% as.data.frame()
+    diffBN_raw <- str2str::ld2a(diffBN$perturb)
+    # row=gene col=edge
+    diffBN_result <- foreach::foreach(i = 1:n_features, .combine = rbind) %do%
+      {
+        foreach::foreach(j = 1:n_edge, .combine = c) %do%
+          {
+            transport::wasserstein1d(
+              as.numeric(diffBN_ref[j, ]),
+              diffBN_raw[j, i, ]
+            )
+          }
+      }
+    colnames(diffBN_result) <- rownames(diffBN$ref[[1]])
+    rownames(diffBN_result) <- colnames(diffBN$perturb[[1]])
   } else {
-    stop("Invalid diffCoeff calculation mode!")
+    stop("Invalid diffBN calculation mode!")
   }
 
-  return(as.data.frame(diffCoeff_result))
+  return(as.data.frame(diffBN_result))
 }
 
 #' PerturbResult
@@ -58,17 +295,29 @@ EffectMatrix <- function(diffCoeff, mode = "mean") {
 #' @return diffCoeff results
 #' @export
 PerturbResult <- function(
-  net_struc,
-  data,
-  meta = NULL,
-  index = NULL,
-  n_sample = 1,
-  n_permutation = 1,
-  deletion = T,
-  mode = "single_cell",
-  ncores = 1,
-  verbal = F,
-  replace = F
+    net_struc,
+    data,
+    meta = NULL,
+    index = NULL,
+    n_sample = 1,
+    n_permutation = 1,
+    deletion = T,
+    mode = "single_cell",
+    ncores = 1,
+    verbal = F,
+    replace = F,
+    oracle = NULL,
+    links = NULL,
+    save_dir = NULL,
+    group.by = "celltype",
+    assay = "RNA",
+    layer = "data",
+    genes = NULL,
+    perturb_value = 0,
+    n_propagation = 3,
+    alpha = 10,
+    filter_links = TRUE,
+    overwrite = FALSE
 ) {
   doParallel::registerDoParallel(ncores)
   if (mode == "single_cell") {
@@ -142,6 +391,24 @@ PerturbResult <- function(
       n_sample = 1,
       n_permutation = 1
     )
+  } else if (mode == "GRN") {
+    diffCoeff_final_result <- GRNPerturbResult(
+      object = data,
+      net_struc = net_struc,
+      oracle = oracle,
+      links = links,
+      save_dir = save_dir,
+      group.by = group.by,
+      assay = assay,
+      layer = layer,
+      genes = genes,
+      perturb_value = perturb_value,
+      n_propagation = n_propagation,
+      alpha = alpha,
+      filter_links = filter_links,
+      overwrite = overwrite,
+      verbal = verbal
+    )
   } else {
     diffCoeff_final_result <- NULL
     print("Wrong mode!")
@@ -186,15 +453,15 @@ get_diffCoeff <- function(scm.inter = NULL, scm.ref = NULL, mode = "mean") {
 #'
 #' @return diffCoeff results
 run_diffCoeff <- function(
-  net_struc,
-  data,
-  meta,
-  index,
-  n_sample = 20,
-  n_permutation = 20,
-  diffCoeff_mode = "mean",
-  verbal = F,
-  replace = F
+    net_struc,
+    data,
+    meta,
+    index,
+    n_sample = 20,
+    n_permutation = 20,
+    diffCoeff_mode = "mean",
+    verbal = F,
+    replace = F
 ) {
   diffCoeff_ref <- vector(mode = "list", length = n_sample)
   meta <- as.matrix(meta)

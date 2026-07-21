@@ -4,16 +4,16 @@
 \alias{EffectMatrix}
 \title{Calculate effect matrix}
 \usage{
-EffectMatrix(diffCoeff, mode = "mean")
+EffectMatrix(diffBN, mode = "mean")
 }
 \arguments{
-\item{diffCoeff}{list of diffCoeff raw result}
+\item{diffBN}{list of diffBN raw result}
 
-\item{mode}{character, determine the diffCoeff function, usually "mean"}
+\item{mode}{character, determine the diffBN function}
 }
 \value{
 Effect matrix
 }
 \description{
-When function \code{PerturbResult} is done, the ouput of \code{PerturbResult} can be the input of this function to produce effect matrix
+Calculate effect matrix from perturbation results.
 }
