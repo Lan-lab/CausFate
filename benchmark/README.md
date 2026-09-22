@@ -14,12 +14,6 @@ The example covers 3–9 nodes and disconnected, sparse, tree and dense
 reference networks. In output filenames, `discrete` denotes disconnected
 networks.
 
-Results and plots are saved under
-`benchmark/results/simulation_causfate/root_A/` or
-`benchmark/results/simulation_causfate/root_free/`.
-Existing results are reused. Set `CAUSFATE_OUTPUT_DIR` to use another output
-directory.
-
 Default settings: seed 42, 20 resamples, sampling fraction 0.2, skeleton
 thresholds 0.05–0.15 in steps of 0.01, no edge-count filtering, pruning
 threshold 0.8, and at most two parents per node.
