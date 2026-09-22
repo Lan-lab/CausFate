@@ -42,18 +42,30 @@ We also provide a [CausFate simulation example](benchmark/simulation_causfate.R)
 
 ## Perturbation and effect metrics
 
-`PerturbResult()` defaults to zeroing (`deletion = FALSE`, `perturb_ratio = 0`).
-It supports knockdown with `0 < perturb_ratio < 1` and knockup with
-`perturb_ratio > 1`; `perturb_ratio = 1` leaves values unchanged.
-Use `deletion = TRUE` for feature deletion.
+`PerturbResult()` performs *in silico* single-feature (GRN-free)
+perturbation and refits the structural equation model. CausFate supports
+knockout, knockdown, knockup and feature deletion:
+
+```r
+# Knockout (default): set the feature value to zero
+perturbRes <- PerturbResult(..., perturb_ratio = 0)
+
+# Knockdown: use any value between 0 and 1
+perturbRes <- PerturbResult(..., perturb_ratio = 0.5)
+
+# Knockup: use any value greater than 1
+perturbRes <- PerturbResult(..., perturb_ratio = 2)
+
+# Feature deletion
+perturbRes <- PerturbResult(..., deletion = TRUE)
+```
+
+The effect matrix can then be calculated using:
 
 ```r
 effMat <- EffectMatrix(perturbRes, dist_metric = "diff_mean")
-score <- diffScore(effMat, edgeSet, abs = TRUE)
 # Other metrics: "W1", "W2", "energy", "mmd"
 ```
-
-`combineDAGsmpl()` supports `model_averaging = "joint"` (default) or `"two-tier"`.
 
 ## Overview of CausFate
 ![CausFate workflow](CausFate%20workflow.png)
