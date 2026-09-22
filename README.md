@@ -11,10 +11,8 @@ R-4.3.3, Matrix-1.6-5, Seurat-5.0.3, bnlearn-4.9.4, doParallel-1.0.17, dplyr-1.1
 
 Additional R dependencies: `SeuratObject`, `Rcpp`, `transport`, and `reticulate`.
 
-Optional Python dependencies:
-
-- GRN-based perturbation: Python 3 with `celloracle`.
-- NOTEARS, GOLEM and DAG-GNN benchmarks: `numpy`, `pandas`, `scipy`, `networkx`, `torch`, and `gcastle`.
+Optional Python dependency for GRN-based perturbation: Python 3 with
+`celloracle`.
 
 ## Installation
 First, install `tidyverse` and the required Bioconductor dependencies:

@@ -18,8 +18,7 @@ Imports: Seurat, bnlearn, doParallel, dplyr, foreach, MASS, corpcor, igraph,
         Rgraphviz, rlang, tibble, tidyr, tidyselect, space, statmod,
         transport, reticulate, SeuratObject, Rcpp
 LinkingTo: Rcpp
-SystemRequirements: Optional: Python 3, celloracle, numpy, pandas, scipy,
-    networkx, torch, gcastle
+SystemRequirements: Optional: Python 3, celloracle
 Depends: R (>= 3.5.0)
 LazyData: true
 NeedsCompilation: yes
