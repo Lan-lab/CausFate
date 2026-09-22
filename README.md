@@ -35,7 +35,7 @@ devtools::install_github("Lan-lab/CausFate")
 ## Tutorial
 Here we provide demos for reconstructing causal cell-state networks and ranking potential fate-determining features using both bulk and single-cell datasets: https://github.com/Lan-lab/CausFate/tree/main/tutorials.
 
-We also provide a [CausFate simulation example](benchmark/simulation_causfate.R) using predefined reference networks with 3–9 nodes (disconnected, sparse, tree and dense). The historical filename key `discrete` denotes the disconnected, edge-free setting. Additional comparator helpers and Python wrappers are included; their presence alone does not constitute a complete reproduction of all manuscript benchmarks. See [benchmark instructions](benchmark/README.md).
+We also provide a [CausFate simulation example](benchmark/simulation_causfate.R) using predefined reference networks with 3–9 nodes (disconnected, sparse, tree and dense). The historical filename key `discrete` denotes the disconnected, edge-free setting. Additional comparator helpers and Python wrappers are included. See [benchmark instructions](benchmark/README.md).
 
 ## Perturbation and effect metrics
 
