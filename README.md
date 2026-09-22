@@ -54,7 +54,7 @@ perturbRes <- PerturbResult(
   n_sample = 10,
   mode = "single_cell",             # Input data mode
   perturbation = "single_feature",  # GRN-free perturbation
-  perturb_ratio = 0,     # Knockout (default): set the feature value to zero
+  perturb_ratio = 0,                # Zeroing (default)
   ncores = 1
 )
 ```

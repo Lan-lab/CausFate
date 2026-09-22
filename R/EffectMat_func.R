@@ -675,55 +675,42 @@ def _ciber_group_mean(oracle, groupby, levels):
 #'
 #' @param diffBN A list containing perturbation results. The object must contain
 #'   \code{ref} and either \code{perturb} or \code{raw}. Depending on the
-#'   calculation mode, \code{n_sample}, \code{n_permutation}, or a precomputed
+#'   selected metric, \code{n_sample}, \code{n_permutation}, or a precomputed
 #'   \code{diff} component may also be used.
 #'
 #' @param dist_metric Effect metric (case-insensitive): \code{"diff_mean"}
 #'   (default), \code{"W1"}, \code{"W2"}, \code{"energy"}, or \code{"mmd"}.
-#'   The legacy aliases \code{"mean"}, \code{"OT"}, and \code{"MMD_linear"}
-#'   are also accepted. Conflicting mode and dist_metric arguments are rejected.
-#' @param mode Backward-compatible metric argument. Supported values
-#'   are \code{"mean"}, \code{"OT"}, \code{"W1"},
-#'   \code{"W2"}, \code{"energy"}, \code{"MMD_linear"}, and \code{"MMD"}.
-#'   See Details.
 #'
 #' @param mmd_n_sample Integer specifying the maximum number of perturbed
 #'   coefficient values sampled per edge when estimating the Gaussian kernel
-#'   bandwidth for \code{mode = "MMD"}. Default is 2000.
+#'   bandwidth for \code{dist_metric = "mmd"}. Default is 2000.
 #'
 #' @param mmd_seed Integer random seed used for bandwidth estimation when
-#'   \code{mode = "MMD"}. Default is 1.
+#'   \code{dist_metric = "mmd"}. Default is 1.
 #'
 #' @details
 #' The returned effect matrix has perturbed genes or features in rows and
 #' network edges in columns.
 #'
-#' \code{dist_metric = "diff_mean"} preserves the legacy signed sum of
-#' paired reference-minus-perturbed coefficient differences. No absolute value
+#' \code{dist_metric = "diff_mean"} calculates the signed sum of paired
+#' reference-minus-perturbed coefficient differences. No absolute value
 #' or division by the number of runs is applied here. With equal repeat counts,
 #' this differs from the signed mean shift by a common scale factor.
 #' \code{diffScore(..., abs = TRUE)} takes absolute edge effects before summing
 #' over the selected edges. Use that default for magnitude-based rankings.
 #'
-#' \code{mode = "mean"} calculates effects using 
+#' \code{dist_metric = "diff_mean"} calculates effects using
 #' \code{get_diffCoeff(..., mode = "mean")} for each paired
 #' reference and perturbation result, followed by summation across runs.
 #'
-#' \code{mode = "W1"} and \code{mode = "W2"} calculate the first- and
+#' \code{dist_metric = "W1"} and \code{dist_metric = "W2"} calculate the first- and
 #' second-order Wasserstein distances, respectively, between the reference and
 #' perturbed coefficient distributions for each gene-edge pair.
-#' \code{mode = "OT"} is retained as a backward-compatible alias for
-#' \code{"W1"}.
 #'
-#' \code{mode = "energy"} calculates the one-dimensional energy distance
+#' \code{dist_metric = "energy"} calculates the one-dimensional energy distance
 #' between the reference and perturbed coefficient distributions.
 #'
-#' \code{mode = "MMD_linear"} calculates a linear-time Gaussian-kernel MMD
-#' estimate using a pooled standard deviation as the kernel bandwidth. Negative
-#' finite-sample estimates of squared MMD are truncated to zero before taking
-#' the square root.
-#'
-#' \code{mode = "MMD"} calculates the biased quadratic Gaussian-kernel MMD
+#' \code{dist_metric = "mmd"} calculates the biased quadratic Gaussian-kernel MMD
 #' squared statistic. A single edge-specific bandwidth is estimated using the
 #' median heuristic and is shared across all perturbed genes for that edge.
 #'
@@ -741,40 +728,33 @@ def _ciber_group_mean(oracle, groupby, levels):
 #' @export
 EffectMatrix <- function(
     diffBN,
-    mode = "mean",
+    dist_metric = "diff_mean",
     mmd_n_sample = 2000,
-    mmd_seed = 1,
-    dist_metric = "diff_mean") {
-  # Keep the old positional arguments intact. Normalize aliases before
-  # checking conflicts; the metric implementations below remain unchanged.
+    mmd_seed = 1) {
   normalize_metric <- function(value) {
-    aliases <- c(diff_mean="mean", mean="mean", w1="W1", ot="W1",
-                 w2="W2", energy="energy", mmd="MMD", mmd_linear="MMD_linear")
+    metrics <- c(diff_mean = "diff_mean", w1 = "W1", w2 = "W2",
+                 energy = "energy", mmd = "mmd")
     if (!is.character(value) || length(value) != 1L || is.na(value) ||
-        !tolower(value) %in% names(aliases)) {
+        !tolower(value) %in% names(metrics)) {
       stop("Invalid effect metric. Use diff_mean, W1, W2, energy, or mmd.")
     }
-    unname(aliases[[tolower(value)]])
+    unname(metrics[[tolower(value)]])
   }
-  if (!missing(mode) && !missing(dist_metric) &&
-      normalize_metric(mode) != normalize_metric(dist_metric)) {
-    stop("Conflicting mode and dist_metric arguments.")
-  }
-  mode <- if (!missing(mode)) normalize_metric(mode) else normalize_metric(dist_metric)
+  metric <- normalize_metric(dist_metric)
   
   if (is.null(diffBN$ref) || length(diffBN$ref) == 0) {
     stop("diffBN$ref is missing or empty.")
   }
   
   # ==========================================================
-  # Legacy mean mode
+  # Signed coefficient-difference metric
   # ==========================================================
   
-  if (mode == "mean") {
+  if (metric == "diff_mean") {
     
     if (is.null(diffBN$perturb) || length(diffBN$perturb) == 0) {
       stop(
-        "mode = 'mean' requires diffBN$perturb."
+        "dist_metric = 'diff_mean' requires diffBN$perturb."
       )
     }
     
@@ -844,10 +824,6 @@ EffectMatrix <- function(
   # ==========================================================
   # New benchmark metrics
   # ==========================================================
-  
-  if (mode == "OT") {
-    mode <- "W1"
-  }
   
   raw_list <- if (!is.null(diffBN$raw)) {
     diffBN$raw
@@ -946,7 +922,7 @@ EffectMatrix <- function(
   # Fixed bandwidth per edge for quadratic MMD
   # ==========================================================
   
-  if (mode == "MMD") {
+  if (metric == "mmd") {
     
     mmd_sigma <- .effect_get_mmd_bandwidth(
       diffBN_ref = diffBN_ref,
@@ -1003,7 +979,7 @@ EffectMatrix <- function(
       )
       
       result[i, j] <- switch(
-        mode,
+        metric,
         
         W1 = transport::wasserstein1d(
           x,
@@ -1022,12 +998,7 @@ EffectMatrix <- function(
           y
         ),
         
-        MMD_linear = .effect_mmd_linear(
-          x,
-          y
-        ),
-        
-        MMD = .effect_mmd2_rbf(
+        mmd = .effect_mmd2_rbf(
           x,
           y,
           sigma = mmd_sigma[j],
@@ -1137,6 +1108,10 @@ PerturbResult <- function(
 ) {
   mode <- match.arg(mode, c("single_cell", "bulk"))
   perturbation <- match.arg(perturbation, c("single_feature", "GRN"))
+  dots <- list(...)
+  if ("deletion" %in% names(dots)) {
+    stop("'deletion' is not a separate argument; use perturb_ratio = \"deletion\".")
+  }
   if (perturbation == "GRN" && mode != "single_cell") {
     stop("GRN perturbation is only supported with mode = 'single_cell'.")
   }
@@ -1269,7 +1244,7 @@ PerturbResult <- function(
     
     grn_args <- modifyList(
       grn_args,
-      list(...)
+      dots
     )
     
     diffCoeff_final_result <- do.call(
