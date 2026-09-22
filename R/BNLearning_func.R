@@ -150,7 +150,8 @@ DG_methods <- function(
 #' Seurat object.
 #'
 #' @param dat A Seurat object.
-#' @param frac Fraction of cells included in each sample.
+#' @param resampling_fraction Fraction of cells included in each resampled
+#'   dataset.
 #' @param N_smpl Number of cell samples.
 #' @param params Numeric vector of tuning parameters for the undirected-graph
 #'   method.
@@ -169,7 +170,7 @@ DG_methods <- function(
 #'   sample.
 DG_smpl <- function(
   dat,
-  frac = 0.3,
+  resampling_fraction = 0.3,
   N_smpl = 10,
   params = c(1:100) / 100,
   whiteList = NULL,
@@ -194,14 +195,14 @@ DG_smpl <- function(
       while (TRUE) {
         meta.smpl <- meta %>%
           dplyr::group_by(celltype) %>%
-          dplyr::sample_frac(frac)
+          dplyr::sample_frac(resampling_fraction)
         if (length(unique(meta.smpl$celltype)) == length(ctypes)) {
           break
         }
         smpl.ttl <- smpl.ttl - 1
         if (smpl.ttl == 0) {
           stop(
-            "Failed sampling attempts reach limit: consider if the sampling fraction is too low or wrong dataset!"
+            "Failed sampling attempts reach limit: consider whether resampling_fraction is too low or the dataset is invalid."
           )
         }
       }
@@ -238,7 +239,8 @@ DG_smpl <- function(
 #'
 #' @param dat A Seurat object in single-cell mode or an expression matrix in
 #'   bulk mode.
-#' @param frac Fraction of cells included in each sample.
+#' @param resampling_fraction Fraction of cells included in each resampled
+#'   dataset.
 #' @param N_smpl Number of cell samples.
 #' @param params Numeric vector of tuning parameters for the undirected-graph
 #'   method.
@@ -264,7 +266,7 @@ DG_smpl <- function(
 #'
 BNLearning <- function(
   dat,
-  frac = 0.3,
+  resampling_fraction = 0.3,
   N_smpl = 10,
   params = c(1:100) / 100,
   whiteList = NULL,
@@ -278,17 +280,17 @@ BNLearning <- function(
 ) {
   if (mode == "single_cell") {
     BNLearn_result <- DG_smpl(
-      dat,
-      frac,
-      N_smpl,
-      params,
-      whiteList,
-      blackList,
-      root,
-      ugMethod,
-      dagMethod,
-      ncores,
-      seed
+      dat = dat,
+      resampling_fraction = resampling_fraction,
+      N_smpl = N_smpl,
+      params = params,
+      whiteList = whiteList,
+      blackList = blackList,
+      root = root,
+      ugMethod = ugMethod,
+      dagMethod = dagMethod,
+      ncores = ncores,
+      seed = seed
     )
   } else if (mode == "bulk") {
     BNLearn_result <- DG_grid(
@@ -315,7 +317,8 @@ BNLearning <- function(
 #'
 #' @param dat A Seurat object in single-cell mode or an expression matrix in
 #'   bulk mode.
-#' @param frac Fraction of cells included in each sample.
+#' @param resampling_fraction Fraction of cells included in each resampled
+#'   dataset.
 #' @param N_smpl Number of cell samples.
 #' @param params Numeric vector of tuning parameters for the undirected-graph
 #'   method.
@@ -338,7 +341,7 @@ BNLearning <- function(
 #'
 learnDAG <- function(
   dat,
-  frac = 0.3,
+  resampling_fraction = 0.3,
   N_smpl = 10,
   params = c(1:100) / 100,
   whiteList = NULL,
@@ -353,7 +356,7 @@ learnDAG <- function(
 ) {
   DAGs <- BNLearning(
     dat,
-    frac = frac,
+    resampling_fraction = resampling_fraction,
     N_smpl = N_smpl,
     params = params,
     whiteList = whiteList,
@@ -505,19 +508,23 @@ hasCyc <- function(dS) {
 #'
 #' @param meta A character or factor vector of cell-type labels.
 #' @param bootstrap_times Number of bootstrap samples.
-#' @param ratio Fraction of cells included in each sample.
+#' @param resampling_fraction Fraction of cells included in each resampled
+#'   dataset.
 #'
 #' @return A list of sampling-index vectors.
 #' @export
 #'
-bootstrap_index <- function(meta, bootstrap_times, ratio) {
+bootstrap_index <- function(meta, bootstrap_times, resampling_fraction) {
   celltype <- names(table(meta))
   index <- list(NULL)
   for (j in 1:bootstrap_times) {
     index[[j]] <- NA
     for (i in 1:length(table(meta))) {
       tmp <- which(meta == celltype[i])
-      index[[j]] <- c(index[[j]], sample(tmp, length(tmp) * ratio, replace = F))
+      index[[j]] <- c(
+        index[[j]],
+        sample(tmp, length(tmp) * resampling_fraction, replace = FALSE)
+      )
     }
     index[[j]] <- index[[j]][-1]
   }

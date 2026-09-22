@@ -6,7 +6,7 @@
 \usage{
 BNLearning(
   dat,
-  frac = 0.3,
+  resampling_fraction = 0.3,
   N_smpl = 10,
   params = c(1:100)/100,
   whiteList = NULL,
@@ -23,7 +23,8 @@ BNLearning(
 \item{dat}{A Seurat object in single-cell mode or an expression matrix in
 bulk mode.}
 
-\item{frac}{Fraction of cells included in each sample.}
+\item{resampling_fraction}{Fraction of cells included in each resampled
+dataset.}
 
 \item{N_smpl}{Number of cell samples.}
 

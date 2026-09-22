@@ -14,7 +14,7 @@ The example covers 3–9 nodes and disconnected, sparse, tree and dense
 reference networks. In output filenames, `discrete` denotes disconnected
 networks.
 
-Default settings: 20 resamples, sampling fraction 0.2, skeleton
+Default settings: 20 resamples, resampling fraction 0.2, skeleton
 thresholds 0.05–0.15 in steps of 0.01, no edge-count filtering, pruning
 threshold 0.8, and at most two parents per node.
 

@@ -62,7 +62,7 @@ for (n_nodes in 3:9) {
           set.seed(seed)
           causfate::BNLearning(
             seu,
-            frac = 0.2,
+            resampling_fraction = 0.2,
             N_smpl = cfg$N_smpl,
             params = cfg$params,
             root = root,

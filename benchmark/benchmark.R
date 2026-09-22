@@ -27,7 +27,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -56,7 +56,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -88,7 +88,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -123,7 +123,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -154,7 +154,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -184,7 +184,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -217,7 +217,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -252,7 +252,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.1, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 15, params = params,
+                       resampling_fraction = 0.2, N_smpl = 15, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -283,7 +283,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -313,7 +313,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -346,7 +346,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -381,7 +381,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.1, 0.2, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 10, params = params,
+                       resampling_fraction = 0.2, N_smpl = 10, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
  titles <- paste0("Param: ", params)
@@ -425,7 +425,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -455,7 +455,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -488,7 +488,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -523,7 +523,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 10, params = params,
+                       resampling_fraction = 0.2, N_smpl = 10, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -567,7 +567,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -597,7 +597,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -630,7 +630,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -665,7 +665,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 10, params = params,
+                       resampling_fraction = 0.2, N_smpl = 10, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -709,7 +709,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -739,7 +739,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -772,7 +772,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -807,7 +807,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 10, params = params,
+                       resampling_fraction = 0.2, N_smpl = 10, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -851,7 +851,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -881,7 +881,7 @@ meta<-Seurat_obj$celltype
 
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -914,7 +914,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 20, params = params,
+                       resampling_fraction = 0.2, N_smpl = 20, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)
@@ -949,7 +949,7 @@ meta<-Seurat_obj$celltype
 set.seed(42)
 params <- seq(0.05, 0.15, 0.01)
 dag_smpl <- BNLearning(Seurat_obj,
-                       frac = 0.2, N_smpl = 10, params = params,
+                       resampling_fraction = 0.2, N_smpl = 10, params = params,
                        root = "A", mode = "single_cell", ncores = 1,
                        dagMethod = "hc", ugMethod = "cmi2ni")
 # titles <- paste0("Param: ", params)

@@ -4,14 +4,15 @@
 \alias{bootstrap_index}
 \title{Generate bootstrap indices}
 \usage{
-bootstrap_index(meta, bootstrap_times, ratio)
+bootstrap_index(meta, bootstrap_times, resampling_fraction)
 }
 \arguments{
 \item{meta}{A character or factor vector of cell-type labels.}
 
 \item{bootstrap_times}{Number of bootstrap samples.}
 
-\item{ratio}{Fraction of cells included in each sample.}
+\item{resampling_fraction}{Fraction of cells included in each resampled
+dataset.}
 }
 \value{
 A list of sampling-index vectors.

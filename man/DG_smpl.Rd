@@ -6,7 +6,7 @@
 \usage{
 DG_smpl(
   dat,
-  frac = 0.3,
+  resampling_fraction = 0.3,
   N_smpl = 10,
   params = c(1:100)/100,
   whiteList = NULL,
@@ -21,7 +21,8 @@ DG_smpl(
 \arguments{
 \item{dat}{A Seurat object.}
 
-\item{frac}{Fraction of cells included in each sample.}
+\item{resampling_fraction}{Fraction of cells included in each resampled
+dataset.}
 
 \item{N_smpl}{Number of cell samples.}
 

@@ -1340,7 +1340,7 @@ benchmarkSimulationDataset <- function(
       
       causfate::BNLearning(
         seu,
-        frac = 0.2,
+        resampling_fraction = 0.2,
         N_smpl = cfg$N_smpl,
         params = cfg$params,
         root = root,
