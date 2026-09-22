@@ -35,22 +35,14 @@ devtools::install_github("Lan-lab/CausFate")
 ## Tutorial
 Here we provide demos for reconstructing causal cell-state networks and ranking potential fate-determining features using both bulk and single-cell datasets: https://github.com/Lan-lab/CausFate/tree/main/tutorials.
 
-We also provide a [CausFate simulation example](benchmark/simulation_causfate.R) using predefined reference networks with 3–9 nodes (disconnected, sparse, tree and dense). The historical filename key `discrete` denotes the disconnected, edge-free setting. Additional comparator helpers and Python wrappers are included. See [benchmark instructions](benchmark/README.md).
+We also provide a [CausFate simulation example](benchmark/simulation_causfate.R) using predefined reference networks with 3–9 nodes (disconnected, sparse, tree and dense). The historical filename key `discrete` denotes the disconnected, edge-free setting. See [benchmark instructions](benchmark/README.md).
 
 ## Perturbation and effect metrics
 
-The updated `PerturbResult()` defaults to zeroing (`deletion = FALSE`,
-`perturb_ratio = 0`). Ratios strictly between 0 and 1 scale values down
-(knockdown), ratios above 1 scale values up (knockup), and 1 leaves values
-unchanged. These operations scale the input values; they do not themselves
-establish biological loss or gain of function. Use `deletion = TRUE` to remove
-the feature before SEM refitting.
-
-This software update is distinct from the reported analyses: the main HMR,
-HHATAC and zebrafish single-feature analyses used permutation, whereas the
-HMR hidden-node analysis and bulk/microarray analyses used feature deletion.
-Graded scaling was not used in those analyses. The notebooks explain their
-chosen operation; the new zeroing example is not the original HMR ranking.
+`PerturbResult()` defaults to zeroing (`deletion = FALSE`, `perturb_ratio = 0`).
+It supports knockdown with `0 < perturb_ratio < 1` and knockup with
+`perturb_ratio > 1`; `perturb_ratio = 1` leaves values unchanged.
+Use `deletion = TRUE` for feature deletion.
 
 ```r
 effMat <- EffectMatrix(perturbRes, dist_metric = "diff_mean")
