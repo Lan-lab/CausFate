@@ -11,8 +11,7 @@ CAUSFATE_ROOT=none Rscript benchmark/simulation_causfate.R
 ```
 
 The example covers 3–9 nodes and disconnected, sparse, tree and dense
-reference networks. In output filenames, `discrete` denotes disconnected
-networks.
+reference networks.
 
 Default settings: 20 resamples, resampling fraction 0.2, skeleton
 thresholds 0.05–0.15 in steps of 0.01, no edge-count filtering, pruning

@@ -11,9 +11,9 @@ PerturbResult(
   index = NULL,
   n_sample = 1,
   n_permutation = 1,
-  deletion = FALSE,
   perturb_ratio = 0,
   mode = "single_cell",
+  perturbation = "single_feature",
   ncores = 1,
   verbal = FALSE,
   replace = FALSE,
@@ -55,16 +55,17 @@ the columns of \code{data} in single-cell mode.}
 \item{n_permutation}{Retained for backward compatibility; ratio perturbation
 and deletion each produce one perturbation result per cell sample.}
 
-\item{deletion}{Logical; if \code{TRUE}, remove each gene in turn instead of
-applying ratio perturbation.}
+\item{perturb_ratio}{A non-negative numeric scalar by which expression of
+the perturbed feature is multiplied, or \code{"deletion"} to remove each
+feature in turn. A value of \code{0} performs zeroing, values between \code{0} and
+\code{1} perform knockdown, and values greater than \code{1} perform knockup.}
 
-\item{perturb_ratio}{Non-negative numeric scalar by which expression of the
-perturbed gene is multiplied. A value of \code{0} performs zeroing, values
-between \code{0} and \code{1} perform knockdown, and values greater than \code{1} perform
-knockup.}
+\item{mode}{Character string specifying the input data mode:
+\code{"single_cell"} or \code{"bulk"}.}
 
-\item{mode}{Character string specifying the input mode: \code{"single_cell"},
-\code{"bulk"}, or \code{"GRN"}.}
+\item{perturbation}{Character string specifying the perturbation mode:
+\code{"single_feature"} for GRN-free perturbation or \code{"GRN"} for
+CellOracle-based GRN perturbation.}
 
 \item{ncores}{Number of cores used for parallel computation.}
 
@@ -123,6 +124,6 @@ A list containing reference and perturbed graph coefficients.
 \description{
 \code{PerturbResult()} calculates graph coefficients from reference and perturbed
 expression data. By default, each gene is perturbed in turn by multiplying
-its expression by \code{perturb_ratio}. Set \code{deletion = TRUE} to use gene
-deletion instead.
+its expression by \code{perturb_ratio}. Set \code{perturb_ratio = "deletion"} to use
+feature deletion instead.
 }

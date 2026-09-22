@@ -1050,8 +1050,8 @@ EffectMatrix <- function(
 #'
 #' `PerturbResult()` calculates graph coefficients from reference and perturbed
 #' expression data. By default, each gene is perturbed in turn by multiplying
-#' its expression by `perturb_ratio`. Set `deletion = TRUE` to use gene
-#' deletion instead.
+#' its expression by `perturb_ratio`. Set `perturb_ratio = "deletion"` to use
+#' feature deletion instead.
 #'
 #' @param net_struc A `bn.fit` network structure.
 #' @param data A data frame or Seurat object containing expression data.
@@ -1061,14 +1061,15 @@ EffectMatrix <- function(
 #' @param n_sample Number of cell samples.
 #' @param n_permutation Retained for backward compatibility; ratio perturbation
 #'   and deletion each produce one perturbation result per cell sample.
-#' @param deletion Logical; if `TRUE`, remove each gene in turn instead of
-#'   applying ratio perturbation.
-#' @param perturb_ratio Non-negative numeric scalar by which expression of the
-#'   perturbed gene is multiplied. A value of `0` performs zeroing, values
-#'   between `0` and `1` perform knockdown, and values greater than `1` perform
-#'   knockup.
-#' @param mode Character string specifying the input mode: `"single_cell"`,
-#'   `"bulk"`, or `"GRN"`.
+#' @param perturb_ratio A non-negative numeric scalar by which expression of
+#'   the perturbed feature is multiplied, or `"deletion"` to remove each
+#'   feature in turn. A value of `0` performs zeroing, values between `0` and
+#'   `1` perform knockdown, and values greater than `1` perform knockup.
+#' @param mode Character string specifying the input data mode:
+#'   `"single_cell"` or `"bulk"`.
+#' @param perturbation Character string specifying the perturbation mode:
+#'   `"single_feature"` for GRN-free perturbation or `"GRN"` for
+#'   CellOracle-based GRN perturbation.
 #' @param ncores Number of cores used for parallel computation.
 #' @param verbal Logical; whether to print progress messages.
 #' @param replace Retained for backward compatibility with permutation-based
@@ -1106,9 +1107,9 @@ PerturbResult <- function(
     index = NULL,
     n_sample = 1,
     n_permutation = 1,
-    deletion = FALSE,
     perturb_ratio = 0,
     mode = "single_cell",
+    perturbation = "single_feature",
     ncores = 1,
     verbal = FALSE,
     replace = FALSE,
@@ -1134,20 +1135,26 @@ PerturbResult <- function(
     features = NULL,
     ...
 ) {
-  if (length(deletion) != 1 || !is.logical(deletion) || is.na(deletion)) {
-    stop("'deletion' must be TRUE or FALSE.")
+  mode <- match.arg(mode, c("single_cell", "bulk"))
+  perturbation <- match.arg(perturbation, c("single_feature", "GRN"))
+  if (perturbation == "GRN" && mode != "single_cell") {
+    stop("GRN perturbation is only supported with mode = 'single_cell'.")
   }
-  if (
-    length(perturb_ratio) != 1 ||
-      !is.numeric(perturb_ratio) ||
-      !is.finite(perturb_ratio) ||
-      perturb_ratio < 0
-  ) {
-    stop("'perturb_ratio' must be a single non-negative finite number.")
+  is_deletion <- identical(perturb_ratio, "deletion")
+  is_numeric_ratio <-
+    length(perturb_ratio) == 1 &&
+    is.numeric(perturb_ratio) &&
+    is.finite(perturb_ratio) &&
+    perturb_ratio >= 0
+  if (perturbation == "single_feature" && !is_deletion && !is_numeric_ratio) {
+    stop(
+      "'perturb_ratio' must be a single non-negative finite number or ",
+      "'deletion'."
+    )
   }
 
   doParallel::registerDoParallel(ncores)
-  if (mode == "single_cell") {
+  if (perturbation == "single_feature" && mode == "single_cell") {
     if (is.null(n_sample)) {
       stop("Sample number not indicated!")
     }
@@ -1155,7 +1162,7 @@ PerturbResult <- function(
       print(paste0(
         "Permutation method: ",
         ifelse(
-          deletion,
+          is_deletion,
           "deletion.",
           paste0("expression ratio ", perturb_ratio, ".")
         )
@@ -1180,7 +1187,7 @@ PerturbResult <- function(
         .export = "get_scm"
       ) %dopar% {
         perturb_tmp <- data_tmp
-        if (deletion) {
+        if (is_deletion) {
           perturb_tmp <- perturb_tmp[-gene_id, , drop = FALSE]
         } else {
           perturb_tmp[gene_id, ] <-
@@ -1206,7 +1213,7 @@ PerturbResult <- function(
       n_sample = n_sample,
       n_permutation = 1
     )
-  } else if (mode == "bulk") {
+  } else if (perturbation == "single_feature" && mode == "bulk") {
     scm.ref <- get_scm(mem = data, graph = net_struc, id = "ref")
     Features <- rownames(data)
     scm.inter <- foreach::foreach(
@@ -1215,7 +1222,7 @@ PerturbResult <- function(
       .export = "get_scm"
     ) %dopar% {
       perturb_tmp <- data
-      if (deletion) {
+      if (is_deletion) {
         perturb_tmp <- perturb_tmp[-gene_id, , drop = FALSE]
       } else {
         perturb_tmp[gene_id, ] <-
@@ -1233,7 +1240,7 @@ PerturbResult <- function(
       n_sample = 1,
       n_permutation = 1
     )
-  } else if (mode == "GRN") {
+  } else if (perturbation == "GRN") {
     grn_args <- list(
       object = data,
       net_struc = net_struc,
@@ -1270,9 +1277,6 @@ PerturbResult <- function(
       grn_args
     )
     
-  } else {
-    diffCoeff_final_result <- NULL
-    print("Wrong mode!")
   }
   return(diffCoeff_final_result)
 }

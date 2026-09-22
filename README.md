@@ -38,7 +38,7 @@ devtools::install_github("Lan-lab/CausFate")
 ## Tutorial
 Here we provide demos for reconstructing causal cell-state networks and ranking potential fate-determining features using both bulk and single-cell datasets: https://github.com/Lan-lab/CausFate/tree/main/tutorials.
 
-We also provide a [CausFate simulation example](benchmark/simulation_causfate.R) using predefined reference networks with 3–9 nodes (disconnected, sparse, tree and dense). The historical filename key `discrete` denotes the disconnected, edge-free setting. See [benchmark instructions](benchmark/README.md).
+We also provide a [CausFate simulation example](benchmark/simulation_causfate.R) using predefined reference networks with 3–9 nodes (disconnected, sparse, tree and dense). See [benchmark instructions](benchmark/README.md).
 
 ## Perturbation and effect metrics
 
@@ -52,8 +52,8 @@ perturbRes <- PerturbResult(
   meta = meta,
   index = index,
   n_sample = 10,
-  mode = "single_cell",   # GRN-free single-feature perturbation
-  deletion = FALSE,
+  mode = "single_cell",             # Input data mode
+  perturbation = "single_feature",  # GRN-free perturbation
   perturb_ratio = 0,     # Knockout (default): set the feature value to zero
   ncores = 1
 )
@@ -64,7 +64,7 @@ Other GRN-free perturbation types can be selected as follows:
 ```r
 PerturbResult(..., perturb_ratio = 0.5)  # Knockdown: any value between 0 and 1
 PerturbResult(..., perturb_ratio = 2)    # Knockup: any value greater than 1
-PerturbResult(..., deletion = TRUE)      # Feature deletion
+PerturbResult(..., perturb_ratio = "deletion") # Feature deletion
 ```
 
 For CellOracle-based GRN perturbation:
@@ -73,7 +73,8 @@ For CellOracle-based GRN perturbation:
 perturbRes <- PerturbResult(
   net_struc = dag_struc,
   data = seurat_object,
-  mode = "GRN",                       # GRN-based perturbation
+  mode = "single_cell",               # Input data mode
+  perturbation = "GRN",               # GRN-based perturbation
   save_dir = "celloracle_results",
   base_GRN = base_GRN,
   group.by = "celltype",

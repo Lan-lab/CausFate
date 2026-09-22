@@ -32,8 +32,7 @@ node_col <- setNames(
 )
 
 for (n_nodes in 3:9) {
-  # "discrete" is the historical filename key for edge-free (disconnected)
-  # reference networks; it does not describe the cell-level sampling scheme.
+  # Internal key for edge-free (disconnected) reference networks.
   for (data_type in c("discrete", "sparse", "tree", "dense")) {
     dataset <- paste0(n_nodes, "_", data_type)
     result_file <- file.path(out_dir, paste0(dataset, ".rds"))
