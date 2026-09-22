@@ -9,6 +9,12 @@ CausFate is a computational framework that leverages causal inference to dissect
 R-4.3.3, Matrix-1.6-5, Seurat-5.0.3, bnlearn-4.9.4, doParallel-1.0.17, dplyr-1.1.4, foreach-1.5.2, MASS-7.3-60.0.1, corpcor-1.6.10, igraph-2.0.3, graph-1.80.0, magrittr-2.0.3, matrixStats-1.3.0, infotheo-1.2.0.1, parallel-4.3.3, Rgraphviz-2.46.0, rlang-1.1.3, tibble-3.2.1, tidyr-1.3.1, tidyselect-1.2.1, space-0.1-1.1, statmod-1.5.0
 ```
 
+Additional R dependencies: `SeuratObject`, `Rcpp`, `transport`, and `reticulate`.
+
+Optional Python dependencies:
+- GRN-based perturbation: Python 3 with `celloracle`.
+- NOTEARS, GOLEM and DAG-GNN benchmarks: `numpy`, `pandas`, `scipy`, `networkx`, `torch`, and `gcastle`.
+
 ## Installation
 First, install `tidyverse` and the required Bioconductor dependencies:
 ```
@@ -50,19 +56,8 @@ score <- diffScore(effMat, edgeSet, abs = TRUE)
 # Other metrics: "W1", "W2", "energy", "mmd"
 ```
 
-`diff_mean` preserves the legacy signed sum of reference-minus-perturbed
-coefficient differences across runs. Absolute values are applied by
-`diffScore(abs = TRUE)`, not by `EffectMatrix()`. For equal repeat counts,
-the signed sum and signed mean shift differ by a common scale factor.
-The existing quadratic `mmd` implementation returns MMD squared with a fixed
-edge-specific Gaussian-kernel bandwidth. The legacy `mode = "mean"` and other
-`mode` calls remain supported; conflicting `mode` and `dist_metric` values
-produce an error. Wasserstein metrics require the R package `transport`.
-
 `combineDAGsmpl(..., model_averaging = "joint")` is the default. The
 `model_averaging = "two-tier"` option is retained for method comparisons.
-GRN-based perturbation additionally requires a configured Python environment
-with CellOracle, accessed via `reticulate`.
 
 ## Overview of CausFate
 ![CausFate workflow](CausFate%20workflow.png)
