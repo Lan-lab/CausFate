@@ -1,0 +1,26 @@
+Package: causfate
+Title: Inferring causal cell-state transition networks and cell fate determinants via graphical models and in silico perturbation
+Version: 1.0.0
+Authors@R:
+  c(
+    person("Longchen", "Xu", email = "xlc17@tsinghua.org.cn", role = c("aut", "cre")),
+    person("Zhemeng", "Rao", email = "raozhemeng@gmail.com", role = c("aut")),
+    person("Hengyi", "Xu", email = "xhy18006@student.pumc.edu.cn", role = c("aut"), 
+      comment = list(ORCID = "0000-0002-5772-0661"))
+  )
+Description: Using topology-optimized Bayesian networks and structural causal model 
+  to infer causal cellular networks and identify cell-fate determining genes.
+License: MIT
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports: Seurat, bnlearn, doParallel, dplyr, foreach, MASS, corpcor, igraph, 
+        graph, magrittr, Matrix, matrixStats, infotheo, parallel,
+        Rgraphviz, rlang, tibble, tidyr, tidyselect, space, statmod,
+        transport, reticulate, SeuratObject, Rcpp
+LinkingTo: Rcpp
+Depends: R (>= 3.5.0)
+LazyData: true
+NeedsCompilation: yes
+Author: Longchen Xu [aut, cre], Zhemeng Rao [aut], Hengyi Xu [aut] (<https://orcid.org/0000-0002-5772-0661>)
+Maintainer: Longchen Xu <xlc17@tsinghua.org.cn>
+Config/roxygen2/version: 8.0.0
