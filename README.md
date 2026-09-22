@@ -12,6 +12,7 @@ R-4.3.3, Matrix-1.6-5, Seurat-5.0.3, bnlearn-4.9.4, doParallel-1.0.17, dplyr-1.1
 Additional R dependencies: `SeuratObject`, `Rcpp`, `transport`, and `reticulate`.
 
 Optional Python dependencies:
+
 - GRN-based perturbation: Python 3 with `celloracle`.
 - NOTEARS, GOLEM and DAG-GNN benchmarks: `numpy`, `pandas`, `scipy`, `networkx`, `torch`, and `gcastle`.
 
@@ -56,8 +57,7 @@ score <- diffScore(effMat, edgeSet, abs = TRUE)
 # Other metrics: "W1", "W2", "energy", "mmd"
 ```
 
-`combineDAGsmpl(..., model_averaging = "joint")` is the default. The
-`model_averaging = "two-tier"` option is retained for method comparisons.
+`combineDAGsmpl()` supports `model_averaging = "joint"` (default) or `"two-tier"`.
 
 ## Overview of CausFate
 ![CausFate workflow](CausFate%20workflow.png)
