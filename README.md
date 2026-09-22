@@ -65,6 +65,7 @@ Other GRN-free perturbation types can be selected as follows:
 PerturbResult(..., perturb_ratio = 0.5)  # Knockdown: any value between 0 and 1
 PerturbResult(..., perturb_ratio = 2)    # Knockup: any value greater than 1
 PerturbResult(..., perturb_ratio = "deletion") # Feature deletion
+PerturbResult(..., perturb_ratio = "permutation", n_permutation = 20) # Random permutation
 ```
 
 For CellOracle-based GRN perturbation:

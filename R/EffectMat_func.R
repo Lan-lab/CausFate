@@ -1021,8 +1021,9 @@ EffectMatrix <- function(
 #'
 #' `PerturbResult()` calculates graph coefficients from reference and perturbed
 #' expression data. By default, each gene is perturbed in turn by multiplying
-#' its expression by `perturb_ratio`. Set `perturb_ratio = "deletion"` to use
-#' feature deletion instead.
+#' its expression by `perturb_ratio`. Use `perturb_ratio = "deletion"` for
+#' feature deletion or `perturb_ratio = "permutation"` for random permutation
+#' across cells.
 #'
 #' @param net_struc A `bn.fit` network structure.
 #' @param data A data frame or Seurat object containing expression data.
@@ -1030,12 +1031,14 @@ EffectMatrix <- function(
 #'   the columns of `data` in single-cell mode.
 #' @param index A list of column indices, one element per cell sample.
 #' @param n_sample Number of cell samples.
-#' @param n_permutation Retained for backward compatibility; ratio perturbation
-#'   and deletion each produce one perturbation result per cell sample.
+#' @param n_permutation Number of random permutations per cell sample when
+#'   `perturb_ratio = "permutation"`. Ratio perturbation and deletion each
+#'   produce one perturbation result per cell sample.
 #' @param perturb_ratio A non-negative numeric scalar by which expression of
-#'   the perturbed feature is multiplied, or `"deletion"` to remove each
-#'   feature in turn. A value of `0` performs zeroing, values between `0` and
-#'   `1` perform knockdown, and values greater than `1` perform knockup.
+#'   the perturbed feature is multiplied, `"deletion"` to remove each feature
+#'   in turn, or `"permutation"` to randomly permute each feature across cells.
+#'   A value of `0` performs zeroing, values between `0` and `1` perform
+#'   knockdown, and values greater than `1` perform knockup.
 #' @param mode Character string specifying the input data mode:
 #'   `"single_cell"` or `"bulk"`.
 #' @param perturbation Character string specifying the perturbation mode:
@@ -1043,8 +1046,8 @@ EffectMatrix <- function(
 #'   CellOracle-based GRN perturbation.
 #' @param ncores Number of cores used for parallel computation.
 #' @param verbal Logical; whether to print progress messages.
-#' @param replace Retained for backward compatibility with permutation-based
-#'   perturbation; it is not used by ratio perturbation or deletion.
+#' @param replace Logical; whether permutation sampling is performed with
+#'   replacement. It is not used by ratio perturbation or deletion.
 #' @param oracle A CellOracle Oracle object or file path used in GRN mode.
 #' @param links A CellOracle Links object or file path used in GRN mode.
 #' @param save_dir Directory for CellOracle and intermediate SCM results.
@@ -1116,20 +1119,41 @@ PerturbResult <- function(
     stop("GRN perturbation is only supported with mode = 'single_cell'.")
   }
   is_deletion <- identical(perturb_ratio, "deletion")
+  is_permutation <- identical(perturb_ratio, "permutation")
   is_numeric_ratio <-
     length(perturb_ratio) == 1 &&
     is.numeric(perturb_ratio) &&
     is.finite(perturb_ratio) &&
     perturb_ratio >= 0
-  if (perturbation == "single_feature" && !is_deletion && !is_numeric_ratio) {
+  if (
+    perturbation == "single_feature" &&
+    !is_deletion &&
+    !is_permutation &&
+    !is_numeric_ratio
+  ) {
     stop(
       "'perturb_ratio' must be a single non-negative finite number or ",
-      "'deletion'."
+      "one of 'deletion' and 'permutation'."
     )
+  }
+  if (is_permutation && mode != "single_cell") {
+    stop("Permutation perturbation is only supported in single-cell mode.")
   }
 
   doParallel::registerDoParallel(ncores)
-  if (perturbation == "single_feature" && mode == "single_cell") {
+  if (perturbation == "single_feature" && is_permutation) {
+    diffCoeff_final_result <- run_diffCoeff(
+      net_struc = net_struc,
+      data = data,
+      meta = meta,
+      index = index,
+      n_sample = n_sample,
+      n_permutation = n_permutation,
+      diffCoeff_mode = "mean",
+      verbal = verbal,
+      replace = replace
+    )
+  } else if (perturbation == "single_feature" && mode == "single_cell") {
     if (is.null(n_sample)) {
       stop("Sample number not indicated!")
     }
@@ -1339,9 +1363,7 @@ run_diffCoeff <- function(
         {
           sample(data_smpl_per[k, ], replace = replace)
         } # as a list
-      data_smpl_per <- mapply(c, data_smpl_per) %>%
-        t() %>%
-        as.data.frame()
+      data_smpl_per <- as.data.frame(t(mapply(c, data_smpl_per)))
       rownames(data_smpl_per) <- rownames(data_tmp[[i]])
       colnames(data_smpl_per) <- colnames(data_tmp[[i]])
       data_smpl_per[] <- lapply(data_smpl_per, as.numeric)

@@ -52,13 +52,15 @@ the columns of \code{data} in single-cell mode.}
 
 \item{n_sample}{Number of cell samples.}
 
-\item{n_permutation}{Retained for backward compatibility; ratio perturbation
-and deletion each produce one perturbation result per cell sample.}
+\item{n_permutation}{Number of random permutations per cell sample when
+\code{perturb_ratio = "permutation"}. Ratio perturbation and deletion each
+produce one perturbation result per cell sample.}
 
 \item{perturb_ratio}{A non-negative numeric scalar by which expression of
-the perturbed feature is multiplied, or \code{"deletion"} to remove each
-feature in turn. A value of \code{0} performs zeroing, values between \code{0} and
-\code{1} perform knockdown, and values greater than \code{1} perform knockup.}
+the perturbed feature is multiplied, \code{"deletion"} to remove each feature
+in turn, or \code{"permutation"} to randomly permute each feature across cells.
+A value of \code{0} performs zeroing, values between \code{0} and \code{1}
+perform knockdown, and values greater than \code{1} perform knockup.}
 
 \item{mode}{Character string specifying the input data mode:
 \code{"single_cell"} or \code{"bulk"}.}
@@ -71,8 +73,8 @@ CellOracle-based GRN perturbation.}
 
 \item{verbal}{Logical; whether to print progress messages.}
 
-\item{replace}{Retained for backward compatibility with permutation-based
-perturbation; it is not used by ratio perturbation or deletion.}
+\item{replace}{Logical; whether permutation sampling is performed with
+replacement. It is not used by ratio perturbation or deletion.}
 
 \item{oracle}{A CellOracle Oracle object or file path used in GRN mode.}
 
@@ -124,6 +126,7 @@ A list containing reference and perturbed graph coefficients.
 \description{
 \code{PerturbResult()} calculates graph coefficients from reference and perturbed
 expression data. By default, each gene is perturbed in turn by multiplying
-its expression by \code{perturb_ratio}. Set \code{perturb_ratio = "deletion"} to use
-feature deletion instead.
+its expression by \code{perturb_ratio}. Use \code{perturb_ratio = "deletion"} for
+feature deletion or \code{perturb_ratio = "permutation"} for random permutation
+across cells.
 }

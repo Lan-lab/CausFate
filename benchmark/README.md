@@ -1,4 +1,4 @@
-# Benchmark examples
+# Benchmark workflows
 
 ## CausFate simulation
 
