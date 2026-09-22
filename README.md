@@ -10,7 +10,7 @@ R-4.3.3, Matrix-1.6-5, Seurat-5.0.3, bnlearn-4.9.4, doParallel-1.0.17, dplyr-1.1
 ```
 
 Optional Python dependency for GRN-based perturbation: Python 3 with
-`celloracle`.
+[CellOracle](https://github.com/morris-lab/CellOracle).
 
 ## Installation
 First, install `tidyverse` and the required Bioconductor dependencies:
@@ -42,22 +42,44 @@ We also provide a [CausFate simulation example](benchmark/simulation_causfate.R)
 
 ## Perturbation and effect metrics
 
-`PerturbResult()` performs *in silico* single-feature (GRN-free)
-perturbation and refits the structural equation model. CausFate supports
-knockout, knockdown, knockup and feature deletion:
+CausFate supports both single-feature (GRN-free) and GRN-based perturbation.
+For GRN-free perturbation of single-cell data:
 
 ```r
-# Knockout (default): set the feature value to zero
-perturbRes <- PerturbResult(..., perturb_ratio = 0)
+perturbRes <- PerturbResult(
+  net_struc = dag_struc,
+  data = HMR,
+  meta = meta,
+  index = index,
+  n_sample = 10,
+  mode = "single_cell",   # GRN-free single-feature perturbation
+  deletion = FALSE,
+  perturb_ratio = 0,     # Knockout (default): set the feature value to zero
+  ncores = 1
+)
+```
 
-# Knockdown: use any value between 0 and 1
-perturbRes <- PerturbResult(..., perturb_ratio = 0.5)
+Other GRN-free perturbation types can be selected as follows:
 
-# Knockup: use any value greater than 1
-perturbRes <- PerturbResult(..., perturb_ratio = 2)
+```r
+PerturbResult(..., perturb_ratio = 0.5)  # Knockdown: any value between 0 and 1
+PerturbResult(..., perturb_ratio = 2)    # Knockup: any value greater than 1
+PerturbResult(..., deletion = TRUE)      # Feature deletion
+```
 
-# Feature deletion
-perturbRes <- PerturbResult(..., deletion = TRUE)
+For CellOracle-based GRN perturbation:
+
+```r
+perturbRes <- PerturbResult(
+  net_struc = dag_struc,
+  data = seurat_object,
+  mode = "GRN",                       # GRN-based perturbation
+  save_dir = "celloracle_results",
+  base_GRN = base_GRN,
+  group.by = "celltype",
+  genes = NULL,                       # NULL perturbs all available regulators
+  n_jobs = 1
+)
 ```
 
 The effect matrix can then be calculated using:
