@@ -55,7 +55,7 @@ chosen operation; the new zeroing example is not the original HMR ranking.
 ```r
 effMat <- EffectMatrix(perturbRes, dist_metric = "diff_mean")
 score <- diffScore(effMat, edgeSet, abs = TRUE)
-# Other metrics (case-insensitive): "W1", "w2", "energy", "mmd", "MMD"
+# Other metrics: "W1", "W2", "energy", "mmd"
 ```
 
 `diff_mean` preserves the legacy signed sum of reference-minus-perturbed
