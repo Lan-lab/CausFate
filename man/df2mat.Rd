@@ -2,18 +2,18 @@
 % Please edit documentation in R/BNLearning_func.R
 \name{df2mat}
 \alias{df2mat}
-\title{df2mat}
+\title{Convert a network data frame to a matrix}
 \usage{
 df2mat(DAG, ctypes = NULL)
 }
 \arguments{
-\item{DAG}{Summarized net structure}
+\item{DAG}{A summarized network structure.}
 
-\item{ctypes}{character, the cell typs used}
+\item{ctypes}{Optional character vector of cell types.}
 }
 \value{
-A matrix that is corresponding to the summarized net structure
+An adjacency matrix corresponding to the summarized network.
 }
 \description{
-df2mat: transform a summarized net structure to matrix
+Transform a summarized network structure into an adjacency matrix.
 }

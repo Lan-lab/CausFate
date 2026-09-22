@@ -7,14 +7,15 @@
 diffScore(diffCoeff, edgeSet, abs = TRUE)
 }
 \arguments{
-\item{diffCoeff}{data frame, with diffCoeff data previously calculated}
+\item{diffCoeff}{A data frame of previously calculated coefficient
+differences.}
 
-\item{edgeSet}{list of edge names}
+\item{edgeSet}{A character vector of edge names.}
 
-\item{abs}{logical, set to TRUE when diffScore is considered the sum of the absolute values of diffCoeff}
+\item{abs}{Logical; whether to sum the absolute coefficient differences.}
 }
 \value{
-list of diffScores
+A numeric vector of differential scores.
 }
 \description{
 Get diffScore

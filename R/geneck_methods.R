@@ -6,6 +6,14 @@
 # License: Creative Commons Attribution 3.0 Unported (CC BY 3.0)
 #          https://creativecommons.org/licenses/by/3.0/
 
+#' Infer a network using CMI2NI
+#'
+#' @param expr.data A numeric expression matrix with observations in rows and
+#'   genes in columns.
+#' @param lambda Positive conditional-mutual-information threshold.
+#'
+#' @return A data frame containing inferred edges and their strengths.
+#' @keywords internal
 network.cmi2ni <- function(expr.data, lambda) {
   if (lambda <= 0) {
     stop("Input error: parameter lambda for cmi2ni should be larger than 0.")
@@ -46,6 +54,15 @@ network.cmi2ni <- function(expr.data, lambda) {
   return(est_edge)
 }
 
+#' Calculate conditional mutual information
+#'
+#' @param v1 A numeric vector.
+#' @param v2 A numeric vector.
+#' @param nargin Number of supplied variable groups.
+#' @param vcs Optional conditioning variable or matrix.
+#'
+#' @return A numeric conditional mutual information value.
+#' @keywords internal
 cmi <- function(v1, v2, nargin = 2, vcs = NULL) {
   if (nargin == 2) {
     c1 <- stats::var(v1)
@@ -82,6 +99,16 @@ cmi <- function(v1, v2, nargin = 2, vcs = NULL) {
   return(cmiv)
 }
 
+#' Run the CMI2NI algorithm
+#'
+#' @param dat A numeric matrix with genes in rows.
+#' @param lambda Conditional-mutual-information threshold.
+#' @param order0 Maximum conditioning order when `nargin = 3`.
+#' @param nargin Algorithm mode, either `2` or `3`.
+#'
+#' @return A list containing the adjacency matrix, edge values, and final
+#'   conditioning order.
+#' @keywords internal
 cmi2ni <- function(dat, lambda, order0 = 0, nargin = 2) {
   # function [G,Gval,order]=pca_cmi(data,lamda,order0)
 
@@ -144,6 +171,14 @@ cmi2ni <- function(dat, lambda, order0 = 0, nargin = 2) {
   ))
 }
 
+#' Calculate a conditional association score
+#'
+#' @param x A numeric vector.
+#' @param y A numeric vector.
+#' @param z A numeric conditioning variable or matrix.
+#'
+#' @return A numeric conditional association score.
+#' @keywords internal
 cas <- function(x, y, z) {
   # x=rand(10,1)';y=rand(10,1)';z=rand(10,2)';
   if (is.null(dim(z))) {
@@ -200,6 +235,19 @@ cas <- function(x, y, z) {
   return(CS)
 }
 
+#' Reduce edges using conditional mutual information
+#'
+#' @param G A binary adjacency matrix.
+#' @param Gval A matrix of edge scores.
+#' @param order Conditioning order.
+#' @param dat A numeric matrix with genes in rows.
+#' @param t Edge-reduction counter.
+#' @param lambda Conditional-mutual-information threshold.
+#' @param nargin Algorithm mode.
+#'
+#' @return A list containing the updated adjacency matrix, edge scores, and
+#'   edge-reduction counter.
+#' @keywords internal
 edgereduce <- function(G, Gval, order, dat, t, lambda, nargin = 2) {
   if (order == 0) {
     for (i in 1:(nrow(G) - 1)) {
@@ -278,6 +326,14 @@ edgereduce <- function(G, Gval, order, dat, t, lambda, nargin = 2) {
   return(list(G = G, Gval = Gval, t = t))
 }
 
+#' Calculate a symmetric conditional association score
+#'
+#' @param x A numeric vector.
+#' @param y A numeric vector.
+#' @param z A numeric conditioning variable or matrix.
+#'
+#' @return A numeric symmetric conditional association score.
+#' @keywords internal
 MI2 <- function(x, y, z) {
   r_dmi <- (cas(x, y, z) + cas(y, x, z)) / 2
 
@@ -288,11 +344,13 @@ MI2 <- function(x, y, z) {
 ### ====================================================== ###
 # The following R scripts are functions to use space to construct gene network.
 
-#' Use space package to predict graph structure
-#' @param expr.data data.frame
-#' @param alpha double
+#' Infer a graph using the space package
 #'
-#' @return data.frame
+#' @param expr.data A numeric expression matrix with observations in rows and
+#'   genes in columns.
+#' @param alpha Positive tuning parameter.
+#'
+#' @return A data frame containing inferred edges and partial correlations.
 network.space <- function(expr.data, alpha) {
   if (alpha <= 0) {
     stop("Input error: parameter alpha for space should be larger than 0.")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/BNLearning_func.R
 \name{BNLearning}
 \alias{BNLearning}
-\title{BNLearning}
+\title{Learn Bayesian network structures}
 \usage{
 BNLearning(
   dat,
@@ -20,33 +20,39 @@ BNLearning(
 )
 }
 \arguments{
-\item{dat}{Seurat object for input}
+\item{dat}{A Seurat object in single-cell mode or an expression matrix in
+bulk mode.}
 
-\item{frac}{numeric, the fraction of cells for every sampling}
+\item{frac}{Fraction of cells included in each sample.}
 
-\item{N_smpl}{numeric, the total times of sampling}
+\item{N_smpl}{Number of cell samples.}
 
-\item{params}{numeric, the parameters used for UG_method}
+\item{params}{Numeric vector of tuning parameters for the undirected-graph
+method.}
 
-\item{whiteList}{data.frame, the list of arcs that must exist in the network}
+\item{whiteList}{A data frame or character vector specifying arcs that must
+be present in the network.}
 
-\item{blackList}{data.frame, the list of arcs that can't exist in the network}
+\item{blackList}{A data frame or character vector specifying arcs that must
+not be present in the network.}
 
-\item{root}{character, the root of the graph, which can't have any node pointing to.}
+\item{root}{Character vector of root nodes, which cannot have incoming arcs.}
 
-\item{ugMethod}{character, determine the UG_method used, usually cmi2ni. Other alternatives including ns/GeneNet/glasso/pcacmi/bayesianglasso}
+\item{ugMethod}{Character string specifying the undirected-graph method.}
 
-\item{dagMethod}{character, determine the method that calculate the arc direction, usually hc}
+\item{dagMethod}{Character string specifying the method used to determine arc
+directions.}
 
-\item{ncores}{integer,the cores that used to speed up the calculation}
+\item{ncores}{Number of cores used for computation.}
 
-\item{mode}{character, can be 'single_cell' or 'bulk'}
+\item{mode}{Character string specifying \code{"single_cell"} or \code{"bulk"} mode.}
 
-\item{seed, }{numeric}
+\item{seed}{Numeric random seed.}
 }
 \value{
-A list of net structures of different parameters and different sampling
+A list of learned network structures.
 }
 \description{
-BNLearning is the function that considers all the parameters in "params" and cell samplings to get a group of net structures based on ugMethod and dagMethod. Compared with DG_grid, DG_smpl is suitable for single cell data in SeuratObject format
+Learn network structures across parameter values, with optional cell
+sampling for single-cell data.
 }

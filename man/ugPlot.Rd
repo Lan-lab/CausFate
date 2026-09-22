@@ -2,20 +2,21 @@
 % Please edit documentation in R/plot_func.R
 \name{ugPlot}
 \alias{ugPlot}
-\title{ugPlot}
+\title{Plot an undirected graph}
 \usage{
 ugPlot(ug, weight = FALSE, ...)
 }
 \arguments{
-\item{ug}{data.frame}
+\item{ug}{A data frame containing \code{node1}, \code{node2}, and optionally \code{strength}
+columns.}
 
-\item{weight}{logic}
+\item{weight}{Logical; whether to display edge weights.}
 
-\item{...}{other}
+\item{...}{Additional arguments passed to \code{plot()}.}
 }
 \value{
-plot
+The plotted graph, invisibly.
 }
 \description{
-ugPlot
+Plot an undirected graph
 }

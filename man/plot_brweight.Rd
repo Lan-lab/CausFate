@@ -2,20 +2,20 @@
 % Please edit documentation in R/plot_func.R
 \name{plot_brweight}
 \alias{plot_brweight}
-\title{plot_brweight}
+\title{Plot branch weights}
 \usage{
 plot_brweight(brweight, title = NULL, font_size = 40)
 }
 \arguments{
-\item{brweight}{numeric}
+\item{brweight}{A list containing branch and weight information.}
 
-\item{title}{character}
+\item{title}{Optional character string used as the plot title.}
 
-\item{font_size}{interger}
+\item{font_size}{Numeric font size.}
 }
 \value{
-plot
+The plotted graph, invisibly.
 }
 \description{
-plot_brweight
+Plot branch weights
 }

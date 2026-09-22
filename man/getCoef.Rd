@@ -6,6 +6,14 @@
 \usage{
 getCoef(dag, data)
 }
+\arguments{
+\item{dag}{A \code{bn} object.}
+
+\item{data}{A data frame or matrix used to fit the network.}
+}
+\value{
+A data frame containing arcs and their absolute coefficients.
+}
 \description{
 Extract bn coefficients
 }

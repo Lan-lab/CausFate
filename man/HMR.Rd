@@ -11,7 +11,6 @@ An object of class \code{Seurat} with 40198 rows and 716 columns.
 HMR
 }
 \description{
-A Seurat object:
-Single cell data of HMR
+A Seurat object containing single-cell HMR data.
 }
 \keyword{datasets}

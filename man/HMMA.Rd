@@ -11,6 +11,7 @@ An object of class \code{data.frame} with 21678 rows and 11 columns.
 HMMA
 }
 \description{
-The test data of microarray expression matrix of HSC differentiation, have 11 cell types and 2 lineages
+A test microarray expression matrix for HSC differentiation, containing 11
+cell types and two lineages.
 }
 \keyword{datasets}

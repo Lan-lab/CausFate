@@ -7,16 +7,16 @@
 genBList(ug, nodes, root = NULL, blackList = NULL)
 }
 \arguments{
-\item{ug}{data.frame}
+\item{ug}{An undirected graph represented as a data frame.}
 
-\item{nodes}{character}
+\item{nodes}{Character vector of node names.}
 
-\item{root}{character}
+\item{root}{Character vector of root nodes.}
 
-\item{blackList}{data.frame}
+\item{blackList}{An optional data frame or character vector of excluded arcs.}
 }
 \value{
-data.frame
+A data frame containing excluded arcs.
 }
 \description{
 Generate blacklist

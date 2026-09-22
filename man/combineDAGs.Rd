@@ -2,20 +2,20 @@
 % Please edit documentation in R/BNLearning_func.R
 \name{combineDAGs}
 \alias{combineDAGs}
-\title{combineDAGs}
+\title{Combine DAGs}
 \usage{
 combineDAGs(dags, Emin = NULL, Emax = NULL)
 }
 \arguments{
-\item{dags}{list of net structures, the result of DG_grid}
+\item{dags}{A list of network structures returned by \code{DG_grid()}.}
 
-\item{Emin}{integer, the minimal arc number. Any net that have arc number lower that Emin will be filtered}
+\item{Emin}{Minimum number of arcs required for a network to be retained.}
 
-\item{Emax}{integer, the maximal arc number. Any net that have arc number higher that Emax will be filtered}
+\item{Emax}{Maximum number of arcs allowed for a network to be retained.}
 }
 \value{
-information of the summarized net structure
+A data frame containing the summarized network structure.
 }
 \description{
-combineDAGs is a function that combine all the net structures in the dags according to a filter of Emin and Emax to get the comprehensize network.
+Combine network structures after filtering them by their numbers of arcs.
 }

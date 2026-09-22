@@ -2,7 +2,7 @@
 % Please edit documentation in R/EffectMat_func.R
 \name{run_diffCoeff}
 \alias{run_diffCoeff}
-\title{run_diffCoeff}
+\title{Calculate coefficients after permutation-based perturbation}
 \usage{
 run_diffCoeff(
   net_struc,
@@ -17,23 +17,30 @@ run_diffCoeff(
 )
 }
 \arguments{
-\item{net_struc}{bn.fit structure}
+\item{net_struc}{A \code{bn.fit} network structure.}
 
-\item{data}{data.frame of single cell expression data}
+\item{data}{A data frame of single-cell expression data.}
 
-\item{meta}{character of metadata corresponding to expression data}
+\item{meta}{A character or factor vector of cell-type labels.}
 
-\item{index}{list of sampling results}
+\item{index}{A list of column indices, one element per cell sample.}
 
-\item{n_sample}{integer, times of cell sampling, usually 20-50}
+\item{n_sample}{Number of cell samples.}
 
-\item{n_permutation}{integer, times of gene permutation, usually 20-50}
+\item{n_permutation}{Number of gene permutations per cell sample.}
 
-\item{diffCoeff_mode}{character, determine the diffCoeff function, usually "mean"}
+\item{diffCoeff_mode}{Character string specifying the coefficient-difference
+calculation mode.}
+
+\item{verbal}{Logical; whether to print progress messages.}
+
+\item{replace}{Logical; whether permutation sampling is performed with
+replacement.}
 }
 \value{
-diffCoeff results
+A list containing reference and perturbed graph coefficients.
 }
 \description{
-run_diffCoeff is a function that calculate diffCoeff results based on a single cell expression data
+Calculate graph coefficients after gene-wise permutation of single-cell
+expression data.
 }

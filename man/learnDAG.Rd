@@ -2,7 +2,7 @@
 % Please edit documentation in R/BNLearning_func.R
 \name{learnDAG}
 \alias{learnDAG}
-\title{Learn the principle DAG from data}
+\title{Learn the principal DAG from data}
 \usage{
 learnDAG(
   dat,
@@ -21,31 +21,39 @@ learnDAG(
 )
 }
 \arguments{
-\item{dat}{Seurat object for input}
+\item{dat}{A Seurat object in single-cell mode or an expression matrix in
+bulk mode.}
 
-\item{frac}{numeric, the fraction of cells for every sampling}
+\item{frac}{Fraction of cells included in each sample.}
 
-\item{N_smpl}{numeric, the total times of sampling}
+\item{N_smpl}{Number of cell samples.}
 
-\item{params}{numeric, the parameters used for UG_method}
+\item{params}{Numeric vector of tuning parameters for the undirected-graph
+method.}
 
-\item{whiteList}{data.frame, the list of arcs that must exist in the network}
+\item{whiteList}{A data frame or character vector specifying arcs that must
+be present in the network.}
 
-\item{blackList}{data.frame, the list of arcs that can't exist in the network}
+\item{blackList}{A data frame or character vector specifying arcs that must
+not be present in the network.}
 
-\item{root}{character, the root of the graph, which can't have any node pointing to.}
+\item{root}{Character vector of root nodes, which cannot have incoming arcs.}
 
-\item{ugMethod}{character, determine the UG_method used, usually cmi2ni. Other alternatives including ns/GeneNet/glasso/pcacmi/bayesianglasso}
+\item{ugMethod}{Character string specifying the undirected-graph method.}
 
-\item{dagMethod}{character, determine the method that calculate the arc direction, usually hc}
+\item{dagMethod}{Character string specifying the method used to determine arc
+directions.}
 
-\item{ncores}{integer,the cores that used to speed up the calculation}
+\item{ncores}{Number of cores used for computation.}
 
-\item{mode}{character, can be 'single_cell' or 'bulk'}
+\item{mode}{Character string specifying \code{"single_cell"} or \code{"bulk"} mode.}
 
-\item{Emin}{integer, a DAG is adopted only when it has more edges than Emin}
+\item{Emin}{Minimum number of arcs required for a DAG to be retained.}
 
-\item{Emax}{integer, a DAG is adopted only when it has less edges than Emax}
+\item{Emax}{Maximum number of arcs allowed for a DAG to be retained.}
+}
+\value{
+A \code{bn} object representing the principal directed acyclic graph.
 }
 \description{
 \code{learnDAG} uses \code{BNLearning} to generate a set of possible DAGs representing

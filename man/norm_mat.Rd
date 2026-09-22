@@ -7,10 +7,10 @@
 norm_mat(N)
 }
 \arguments{
-\item{dS}{matrix}
+\item{N}{A numeric adjacency matrix.}
 }
 \value{
-matrix
+A normalized adjacency matrix.
 }
 \description{
 Reduce undirected edges and normalize edge weight

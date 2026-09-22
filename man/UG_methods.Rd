@@ -2,24 +2,25 @@
 % Please edit documentation in R/BNLearning_func.R
 \name{UG_methods}
 \alias{UG_methods}
-\title{UG_methods}
+\title{Learn an undirected graph}
 \usage{
 UG_methods(mem, param = 0.2, plot = FALSE, weight = FALSE, ugMethod = "cmi2ni")
 }
 \arguments{
-\item{mem}{matrix of data, gene as rows and cell types as cols}
+\item{mem}{A data matrix with genes in rows and cell types in columns.}
 
-\item{param}{numeric, the parameter of UG methods, ranging from 0 to 1}
+\item{param}{Numeric tuning parameter for the undirected-graph method,
+generally ranging from 0 to 1.}
 
-\item{plot}{logic}
+\item{plot}{Logical; whether to plot the learned graph.}
 
-\item{weight}{logic}
+\item{weight}{Logical; whether to display edge weights in the plot.}
 
-\item{ugMethod}{character, determine the method used, usually cmi2ni. Other alternatives including ns/GeneNet/glasso/pcacmi/bayesianglasso}
+\item{ugMethod}{Character string specifying the undirected-graph method.}
 }
 \value{
-matrix, return the UG method calculation results
+The result returned by the selected undirected-graph method.
 }
 \description{
-UG_methods is the function that use indirect graph algorithm to get the connection between nodes
+Use an undirected-graph algorithm to identify connections between nodes.
 }

@@ -1,13 +1,13 @@
 #' HMR
 #'
-#' A Seurat object:
-#' Single cell data of HMR
+#' A Seurat object containing single-cell HMR data.
 #' 
 #' @import Seurat
 "HMR"
 
 #' HMMA
 #'
-#' The test data of microarray expression matrix of HSC differentiation, have 11 cell types and 2 lineages
+#' A test microarray expression matrix for HSC differentiation, containing 11
+#' cell types and two lineages.
 #'
 "HMMA"

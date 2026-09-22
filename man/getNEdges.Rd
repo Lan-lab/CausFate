@@ -7,10 +7,11 @@
 getNEdges(dags)
 }
 \arguments{
-\item{dags}{list}
+\item{dags}{A list of network structures.}
 }
 \value{
-character
+A named numeric vector containing the number of arcs in each
+network.
 }
 \description{
 Get N edges

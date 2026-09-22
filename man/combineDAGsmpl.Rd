@@ -2,22 +2,32 @@
 % Please edit documentation in R/BNLearning_func.R
 \name{combineDAGsmpl}
 \alias{combineDAGsmpl}
-\title{combineDAGsmpl}
+\title{Combine DAGs across cell samples}
 \usage{
-combineDAGsmpl(dags.smpl, Emin = NULL, Emax = NULL, ncores = 64)
+combineDAGsmpl(
+  dags.smpl,
+  Emin = NULL,
+  Emax = NULL,
+  ncores = 64,
+  model_averaging = c("joint", "two-tier")
+)
 }
 \arguments{
-\item{dags.smpl}{list of net structures, the result of DG_smpl}
+\item{dags.smpl}{A list of network structures returned by \code{DG_smpl()}.}
 
-\item{Emin}{integer, the minimal arc number. Any net that have arc number lower that Emin will be filtered}
+\item{Emin}{Minimum number of arcs required for a network to be retained.}
 
-\item{Emax}{integer, the maximal arc number. Any net that have arc number higher that Emax will be filtered}
+\item{Emax}{Maximum number of arcs allowed for a network to be retained.}
 
-\item{ncores}{integer, number of cores used to speed up the calculation}
+\item{ncores}{Number of cores used for computation.}
+
+\item{model_averaging}{Character string specifying the model-averaging
+strategy: \code{"joint"} or \code{"two-tier"}.}
 }
 \value{
-information of the summarized net structure
+A data frame containing the summarized network structure.
 }
 \description{
-combineDAGsmpl is a function that combine all the net structures in the dags.smpl according to a filter of Emin and Emax to get the comprehensize network.
+Combine the network structures in \code{dags.smpl} after filtering them by their
+numbers of arcs.
 }

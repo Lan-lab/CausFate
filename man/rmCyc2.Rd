@@ -7,10 +7,10 @@
 rmCyc2(dS)
 }
 \arguments{
-\item{dS}{list}
+\item{dS}{A summarized network structure.}
 }
 \value{
-list
+A summarized directed network structure.
 }
 \description{
 Reduce undirected edges to directed edges

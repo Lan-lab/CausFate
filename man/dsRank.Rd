@@ -7,10 +7,11 @@
 dsRank(diffScores)
 }
 \arguments{
-\item{diffScores}{list of previously calculated diffScores}
+\item{diffScores}{A named numeric vector of previously calculated
+differential scores.}
 }
 \value{
-list of ranked gene names
+A character vector of ranked gene names.
 }
 \description{
 Rank genes according to diffScores

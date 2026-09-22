@@ -2,20 +2,21 @@
 % Please edit documentation in R/plot_func.R
 \name{dagPlot}
 \alias{dagPlot}
-\title{dagPlot}
+\title{Plot a directed acyclic graph}
 \usage{
 dagPlot(DAG, weight = FALSE, ...)
 }
 \arguments{
-\item{DAG}{list}
+\item{DAG}{A data frame containing \code{from}, \code{to}, and optionally \code{freq}
+columns.}
 
-\item{weight}{logic}
+\item{weight}{Logical; whether to display edge weights.}
 
-\item{...}{other}
+\item{...}{Additional arguments passed to \code{plot()}.}
 }
 \value{
-plot
+The plotted graph, invisibly.
 }
 \description{
-dagPlot
+Plot a directed acyclic graph
 }

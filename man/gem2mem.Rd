@@ -2,21 +2,20 @@
 % Please edit documentation in R/BNLearning_func.R
 \name{gem2mem}
 \alias{gem2mem}
-\title{gem2mem}
+\title{Summarize a gene-expression matrix}
 \usage{
 gem2mem(gem = NULL, meta = NULL, FUN = c("mean", "median"))
 }
 \arguments{
-\item{gem}{data.frame of single cell expression}
+\item{gem}{A data frame or matrix of single-cell expression values.}
 
-\item{meta}{character, cell type information of single cell expression data}
+\item{meta}{A character or factor vector of cell-type labels.}
 
-\item{FUN}{character, can be 'mean' or 'median'}
+\item{FUN}{Character string specifying \code{"mean"} or \code{"median"}.}
 }
 \value{
-data.frame
+A data frame of summarized expression values.
 }
 \description{
-gem2mem is a function that can summary a single cell expression matrix to a cell type expression matrix using the metadata and method given
-Usually, FUN='mean'
+Summarize a single-cell expression matrix into a cell-type expression matrix.
 }

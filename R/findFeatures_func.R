@@ -1,10 +1,10 @@
 #' Generate edge set
 #'
-#' @param fromSet list of starting nodes
-#' @param toSet list of ending nodes
-#' @param sep character, used for sepearating names
+#' @param fromSet Character vector of starting nodes.
+#' @param toSet Character vector of ending nodes.
+#' @param sep Character string used to separate node names.
 #'
-#' @return list of edge names
+#' @return A character vector of edge names.
 #' @export
 #'
 #' @examples
@@ -18,11 +18,12 @@ setEdges <- function(fromSet, toSet, sep = "~") {
 
 #' Get diffScore
 #'
-#' @param diffCoeff data frame, with diffCoeff data previously calculated
-#' @param edgeSet list of edge names
-#' @param abs logical, set to TRUE when diffScore is considered the sum of the absolute values of diffCoeff
+#' @param diffCoeff A data frame of previously calculated coefficient
+#'   differences.
+#' @param edgeSet A character vector of edge names.
+#' @param abs Logical; whether to sum the absolute coefficient differences.
 #'
-#' @return list of diffScores
+#' @return A numeric vector of differential scores.
 #' @export
 #'
 diffScore <- function(diffCoeff, edgeSet, abs = TRUE) {
@@ -35,9 +36,10 @@ diffScore <- function(diffCoeff, edgeSet, abs = TRUE) {
 
 #' Rank genes according to diffScores
 #'
-#' @param diffScores list of previously calculated diffScores
+#' @param diffScores A named numeric vector of previously calculated
+#'   differential scores.
 #'
-#' @return list of ranked gene names
+#' @return A character vector of ranked gene names.
 #' @export
 #'
 dsRank <- function(diffScores) {

@@ -2,16 +2,16 @@
 % Please edit documentation in R/BNLearning_func.R
 \name{mat2df}
 \alias{mat2df}
-\title{mat2df}
+\title{Convert a network matrix to a data frame}
 \usage{
 mat2df(DAG.dm)
 }
 \arguments{
-\item{DAG.dm}{A matrix that represent a net structure}
+\item{DAG.dm}{A matrix representing a network structure.}
 }
 \value{
-Summarized net structure
+A data frame containing the summarized network structure.
 }
 \description{
-mat2df: transform a matrix to a summarized net structure
+Transform an adjacency matrix into a summarized network structure.
 }

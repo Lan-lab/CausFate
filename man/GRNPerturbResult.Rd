@@ -7,54 +7,78 @@
 GRNPerturbResult(
   object,
   net_struc,
-  oracle,
-  links,
+  oracle = NULL,
+  links = NULL,
   save_dir,
+  base_GRN = NULL,
   group.by = "celltype",
   assay = "RNA",
   layer = "data",
+  counts_layer = "counts",
+  embedding = "umap",
+  features = NULL,
   genes = NULL,
   perturb_value = 0,
   n_propagation = 3,
+  n_pca_dims = 50,
+  k = NULL,
   alpha = 10,
+  bagging_number = 20,
+  n_jobs = -1,
   filter_links = TRUE,
   overwrite = FALSE,
   verbal = TRUE
 )
 }
 \arguments{
-\item{object}{Seurat object}
+\item{object}{A Seurat object.}
 
-\item{net_struc}{Cell-type DAG}
+\item{net_struc}{A cell-type DAG.}
 
-\item{oracle}{Preprocessed CellOracle Oracle object}
+\item{oracle}{A CellOracle Oracle object or file path.}
 
-\item{links}{Path to a CellOracle Links file}
+\item{links}{A CellOracle Links object or file path.}
 
-\item{save_dir}{Directory for intermediate SCM results}
+\item{save_dir}{Directory for CellOracle and intermediate SCM results.}
 
-\item{group.by}{Cell-type column in Seurat metadata}
+\item{base_GRN}{Base GRN used when \code{oracle} or \code{links} is \code{NULL}.}
 
-\item{assay}{Assay used for SCM calculation}
+\item{group.by}{Cell-type column in the Seurat metadata.}
 
-\item{layer}{Expression layer used for SCM calculation}
+\item{assay}{Assay used for SCM calculation.}
 
-\item{genes}{Genes to perturb; NULL uses all available regulatory genes}
+\item{layer}{Expression layer used for SCM calculation.}
 
-\item{perturb_value}{Target expression value}
+\item{counts_layer}{Raw-count layer used to build the CellOracle object.}
 
-\item{n_propagation}{Number of CellOracle propagation steps}
+\item{embedding}{Seurat dimensional reduction used by CellOracle.}
 
-\item{alpha}{Ridge coefficient used for GRN fitting}
+\item{features}{Genes used when building the CellOracle object.}
 
-\item{filter_links}{Whether to filter Links before GRN fitting}
+\item{genes}{Genes to perturb; \code{NULL} uses all available regulatory genes.}
 
-\item{overwrite}{Whether to overwrite cached results}
+\item{perturb_value}{Target expression value passed to CellOracle.}
 
-\item{verbal}{Whether to print progress}
+\item{n_propagation}{Number of CellOracle propagation steps.}
+
+\item{n_pca_dims}{Number of principal components used for KNN imputation.}
+
+\item{k}{Number of nearest neighbours.}
+
+\item{alpha}{Ridge coefficient.}
+
+\item{bagging_number}{Number of bagging estimators.}
+
+\item{n_jobs}{Number of CPU cores used by CellOracle.}
+
+\item{filter_links}{Logical; whether to filter the Links object.}
+
+\item{overwrite}{Logical; whether to overwrite cached SCM results.}
+
+\item{verbal}{Logical; whether to print progress messages.}
 }
 \value{
-A PerturbResult-compatible list
+A list compatible with the output of \code{PerturbResult()}.
 }
 \description{
 CellOracle-based GRN perturbation

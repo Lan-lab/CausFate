@@ -2,15 +2,20 @@
 % Please edit documentation in R/BNLearning_func.R
 \name{df2bn}
 \alias{df2bn}
-\title{Transform graph structure from data.frame to bn}
+\title{Convert a graph data frame to a Bayesian network}
 \usage{
 df2bn(dS, node_names, plot = TRUE)
 }
 \arguments{
-\item{dS}{data.frame, with columns named \code{from} and \code{to}}
+\item{dS}{A data frame with columns named \code{from} and \code{to}.}
 
-\item{node_names}{character}
+\item{node_names}{Character vector of node names.}
+
+\item{plot}{Logical; whether to plot the network.}
+}
+\value{
+A \code{bn} object.
 }
 \description{
-Transform graph structure from data.frame to bn
+Convert a graph data frame to a Bayesian network
 }

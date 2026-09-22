@@ -2,16 +2,16 @@
 % Please edit documentation in R/BNLearning_func.R
 \name{rmCycL}
 \alias{rmCycL}
-\title{rmCycL}
+\title{Remove cycles using graph layout}
 \usage{
 rmCycL(dS)
 }
 \arguments{
-\item{dS}{Summarized net structure}
+\item{dS}{A summarized network structure.}
 }
 \value{
-Summarized net structure, but the circles are removed
+A summarized network structure with cycles removed.
 }
 \description{
-rmCycL: remove the circles in the network according to the hierarchical structure
+Remove cycles from a network according to its hierarchical layout.
 }

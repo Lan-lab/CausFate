@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_func.R
 \name{colorEdges}
 \alias{colorEdges}
-\title{colorEdges}
+\title{Plot a network with reference-based edge colours}
 \usage{
 colorEdges(
   net,
@@ -15,20 +15,23 @@ colorEdges(
 )
 }
 \arguments{
-\item{net}{bn, network to be plotted}
+\item{net}{A \code{bn} network to plot.}
 
-\item{ref}{bn, network of reference}
+\item{ref}{A reference \code{bn} network.}
 
-\item{main}{string, title of plot}
+\item{main}{Character string used as the plot title.}
 
-\item{node_col}{named vector, colors for the nodes}
+\item{node_col}{Named vector of node colours.}
 
-\item{fontsize}{numeric, font size for node labels (default 12)}
+\item{fontsize}{Font size for node labels.}
 
-\item{node_size}{numeric, node diameter in inches (default 0.7)}
+\item{node_size}{Node diameter in inches.}
 
-\item{sep}{numeric, spacing between nodes (ranksep/nodesep) (default 1.2)}
+\item{sep}{Spacing between nodes (\code{ranksep} and \code{nodesep}).}
+}
+\value{
+The rendered graph, invisibly.
 }
 \description{
-colorEdges
+Plot a network with reference-based edge colours
 }

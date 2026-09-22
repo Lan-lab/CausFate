@@ -2,18 +2,19 @@
 % Please edit documentation in R/geneck_methods.R
 \name{network.space}
 \alias{network.space}
-\title{Use space package to predict graph structure}
+\title{Infer a graph using the space package}
 \usage{
 network.space(expr.data, alpha)
 }
 \arguments{
-\item{expr.data}{data.frame}
+\item{expr.data}{A numeric expression matrix with observations in rows and
+genes in columns.}
 
-\item{alpha}{double}
+\item{alpha}{Positive tuning parameter.}
 }
 \value{
-data.frame
+A data frame containing inferred edges and partial correlations.
 }
 \description{
-Use space package to predict graph structure
+Infer a graph using the space package
 }

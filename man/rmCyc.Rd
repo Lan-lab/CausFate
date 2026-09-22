@@ -7,11 +7,13 @@
 rmCyc(dS, method = "sorted")
 }
 \arguments{
-\item{dS}{Summarized net structure}
+\item{dS}{A summarized network structure.}
+
+\item{method}{Character string specifying the cycle-removal method.}
 }
 \value{
-Summarized net structure, but the circles are removed
+A summarized network structure with cycles removed.
 }
 \description{
-rmCyc: remove the circles in the network according to the hierarchical structure and net matrix
+Remove cycles according to the hierarchical structure and network matrix.
 }

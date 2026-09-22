@@ -2,20 +2,21 @@
 % Please edit documentation in R/EffectMat_func.R
 \name{get_scm}
 \alias{get_scm}
-\title{get_scm}
+\title{Calculate structural causal model coefficients}
 \usage{
 get_scm(mem = NULL, graph = NULL, id = NULL)
 }
 \arguments{
-\item{mem}{data.frame of cell type expression}
+\item{mem}{A data frame of cell-type expression values.}
 
-\item{graph}{bn.fit structure}
+\item{graph}{A \code{bn.fit} network structure.}
 
-\item{id}{character, id should be given to label the information of sampling and permutation, best in the form of s1p1}
+\item{id}{Character identifier for the sampling and perturbation result.}
 }
 \value{
-bn.fit results
+A data frame of fitted edge coefficients.
 }
 \description{
-get_scm:calculate bn.fit results according to a certain neetwork structure and a cell type expression data.frame
+Calculate \code{bn.fit} coefficients for a network and a cell-type expression
+data frame.
 }

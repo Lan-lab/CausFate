@@ -1,10 +1,10 @@
-#' plot_brweight
+#' Plot branch weights
 #'
-#' @param brweight numeric
-#' @param title character
-#' @param font_size interger
+#' @param brweight A list containing branch and weight information.
+#' @param title Optional character string used as the plot title.
+#' @param font_size Numeric font size.
 #'
-#' @return plot
+#' @return The plotted graph, invisibly.
 #' @export
 plot_brweight <- function(brweight, title = NULL, font_size = 40) {
   gp <- graph::ftM2graphNEL(as.matrix(brweight$branch))
@@ -22,13 +22,14 @@ plot_brweight <- function(brweight, title = NULL, font_size = 40) {
   plot(gp, edgeAttrs = eAttrs, nodeAttrs = nAttrs, attrs = attrs, main = title)
 }
 
-#' dagPlot
+#' Plot a directed acyclic graph
 #'
-#' @param DAG list
-#' @param weight logic
-#' @param ... other
+#' @param DAG A data frame containing `from`, `to`, and optionally `freq`
+#'   columns.
+#' @param weight Logical; whether to display edge weights.
+#' @param ... Additional arguments passed to `plot()`.
 #'
-#' @return plot
+#' @return The plotted graph, invisibly.
 #' @export
 dagPlot <- function(DAG, weight = FALSE, ...) {
   gp <- DAG[, c("from", "to")] %>%
@@ -42,13 +43,14 @@ dagPlot <- function(DAG, weight = FALSE, ...) {
   plot(gp, edgeAttrs = eAttrs, ...)
 }
 
-#' ugPlot
+#' Plot an undirected graph
 #'
-#' @param ug data.frame
-#' @param weight logic
-#' @param ... other
+#' @param ug A data frame containing `node1`, `node2`, and optionally `strength`
+#'   columns.
+#' @param weight Logical; whether to display edge weights.
+#' @param ... Additional arguments passed to `plot()`.
 #'
-#' @return plot
+#' @return The plotted graph, invisibly.
 #' @export
 ugPlot <- function(ug, weight = FALSE, ...) {
   gp <- ug[, c("node1", "node2")] %>%
@@ -72,16 +74,17 @@ ugPlot <- function(ug, weight = FALSE, ...) {
   plot(gp, edgeAttrs = eAttrs)
 }
 
-#' colorEdges
+#' Plot a network with reference-based edge colours
 #'
-#' @param net bn, network to be plotted
-#' @param ref bn, network of reference
-#' @param main string, title of plot
-#' @param node_col named vector, colors for the nodes
-#' @param fontsize numeric, font size for node labels (default 12)
-#' @param node_size numeric, node diameter in inches (default 0.7)
-#' @param sep numeric, spacing between nodes (ranksep/nodesep) (default 1.2)
+#' @param net A `bn` network to plot.
+#' @param ref A reference `bn` network.
+#' @param main Character string used as the plot title.
+#' @param node_col Named vector of node colours.
+#' @param fontsize Font size for node labels.
+#' @param node_size Node diameter in inches.
+#' @param sep Spacing between nodes (`ranksep` and `nodesep`).
 #'
+#' @return The rendered graph, invisibly.
 #' @export
 colorEdges <- function(
   net,

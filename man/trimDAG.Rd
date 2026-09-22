@@ -2,7 +2,7 @@
 % Please edit documentation in R/BNLearning_func.R
 \name{trimDAG}
 \alias{trimDAG}
-\title{trimDAG}
+\title{Trim a DAG using fitted coefficients}
 \usage{
 trimDAG(
   dat_tmp,
@@ -14,19 +14,22 @@ trimDAG(
 )
 }
 \arguments{
-\item{dat_tmp}{matrix of gene expression based on different cell types}
+\item{dat_tmp}{A matrix of gene expression values across cell types.}
 
-\item{e}{A bn.fit net structure}
+\item{e}{A \code{bn.fit} network structure.}
 
-\item{min_arc}{integer, the minimal number of arcs pointing to a node}
+\item{min_arc}{Minimum number of arcs pointing to a node.}
 
-\item{max_arc}{integer, the maximal number of arcs pointing to a node}
+\item{max_arc}{Maximum number of arcs pointing to a node.}
 
-\item{threshold_value}{numeric, determine the filter threshold with which arcs are filtered according to bn.fit results}
+\item{threshold_value}{Numeric threshold used to filter arcs according to
+fitted coefficients.}
+
+\item{plot}{Logical; whether to plot the trimmed DAG.}
 }
 \value{
-A new bn.fit net structure after filter
+The filtered network structure.
 }
 \description{
-trimDAG is a function that modify netword structure according to bn.fit results
+Modify a network structure according to fitted \code{bn.fit} coefficients.
 }

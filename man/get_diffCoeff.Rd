@@ -2,20 +2,22 @@
 % Please edit documentation in R/EffectMat_func.R
 \name{get_diffCoeff}
 \alias{get_diffCoeff}
-\title{get_diffCoeff}
+\title{Calculate coefficient differences}
 \usage{
 get_diffCoeff(scm.inter = NULL, scm.ref = NULL, mode = "mean")
 }
 \arguments{
-\item{scm.inter}{data.frame of bn.fit results}
+\item{scm.inter}{A data frame of perturbed \code{bn.fit} coefficients.}
 
-\item{scm.ref}{data.frame of bn.fit reference, which don't have any gene deletion or permutation}
+\item{scm.ref}{A data frame of reference \code{bn.fit} coefficients.}
 
-\item{mode}{character, determine how the diffCoeff is calculate, usually use "mean"}
+\item{mode}{Character string specifying how coefficient differences are
+calculated. Currently, only \code{"mean"} is supported.}
 }
 \value{
-data.frame of diffCoeff
+A data frame of coefficient differences.
 }
 \description{
-get_diffCoeff: based on a set of bn.fit results and a bn.fir reference, calculate the diffCoeff results
+Calculate coefficient differences from a set of \code{bn.fit} results and an
+unperturbed reference.
 }

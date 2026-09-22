@@ -9,16 +9,16 @@ setEdges(fromSet, toSet, sep = "~")
 setEdges(fromSet, toSet, sep = "~")
 }
 \arguments{
-\item{fromSet}{list of starting nodes}
+\item{fromSet}{Character vector of starting nodes.}
 
-\item{toSet}{list of ending nodes}
+\item{toSet}{Character vector of ending nodes.}
 
-\item{sep}{character, used for sepearating names}
+\item{sep}{Character string used to separate node names.}
 }
 \value{
-character
+A character vector of edge names.
 
-list of edge names
+A character vector of edge names.
 }
 \description{
 Generate edge set

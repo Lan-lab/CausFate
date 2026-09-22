@@ -2,20 +2,20 @@
 % Please edit documentation in R/BNLearning_func.R
 \name{bootstrap_index}
 \alias{bootstrap_index}
-\title{bootstrap_index}
+\title{Generate bootstrap indices}
 \usage{
 bootstrap_index(meta, bootstrap_times, ratio)
 }
 \arguments{
-\item{meta}{character, the cell type information of single cell data}
+\item{meta}{A character or factor vector of cell-type labels.}
 
-\item{bootstrap_times}{numeric, times of sampling, should be some with "bootstrap_time" in "run_diffCoeff"}
+\item{bootstrap_times}{Number of bootstrap samples.}
 
-\item{ratio}{double, the fraction of cell that are involved in every sample}
+\item{ratio}{Fraction of cells included in each sample.}
 }
 \value{
-list of index for diffCoeff
+A list of sampling-index vectors.
 }
 \description{
-bootstrap_index: create sampling index for run_diffCoeff
+Create sampling indices for \code{run_diffCoeff()}.
 }

@@ -2,18 +2,18 @@
 % Please edit documentation in R/EffectMat_func.R
 \name{g_per}
 \alias{g_per}
-\title{Permutate specific gene data}
+\title{Permute expression values for a specific gene}
 \usage{
 g_per(data_per, gene_pos)
 }
 \arguments{
-\item{data_per}{data.frame}
+\item{data_per}{A data frame containing expression data.}
 
-\item{gene_pos}{interger}
+\item{gene_pos}{Integer index of the gene to permute.}
 }
 \value{
-data.frame
+The data frame with the selected gene permuted.
 }
 \description{
-Permutate specific gene data
+Permute expression values for a specific gene
 }

@@ -1,14 +1,15 @@
-#' UG_methods
+#' Learn an undirected graph
 #'
-#' UG_methods is the function that use indirect graph algorithm to get the connection between nodes
+#' Use an undirected-graph algorithm to identify connections between nodes.
 #'
-#' @param mem matrix of data, gene as rows and cell types as cols
-#' @param param numeric, the parameter of UG methods, ranging from 0 to 1
-#' @param plot logic
-#' @param weight logic
-#' @param ugMethod character, determine the method used, usually cmi2ni. Other alternatives including ns/GeneNet/glasso/pcacmi/bayesianglasso
+#' @param mem A data matrix with genes in rows and cell types in columns.
+#' @param param Numeric tuning parameter for the undirected-graph method,
+#'   generally ranging from 0 to 1.
+#' @param plot Logical; whether to plot the learned graph.
+#' @param weight Logical; whether to display edge weights in the plot.
+#' @param ugMethod Character string specifying the undirected-graph method.
 #'
-#' @return matrix, return the UG method calculation results
+#' @return The result returned by the selected undirected-graph method.
 UG_methods <- function(
   mem,
   param = 0.2,
@@ -41,20 +42,25 @@ UG_methods <- function(
 }
 
 
-#' DG_grid
+#' Learn directed graphs over a parameter grid
 #'
-#' DG_grid is the function that considers all the parameters in "params" to get a group of net structures based on ugMethod and dagMethod
+#' Learn a collection of network structures for all values in `params` using
+#' the selected undirected- and directed-graph methods.
 #'
-#' @param mem matrix of data, gene as rows and cell types as cols
-#' @param params numeric, the parameters of UG methods, ranging from 0 to 1
-#' @param whiteList data.frame, the list of arcs that must exist in the network
-#' @param blackList data.frame, the list of arcs that can't exist in the network
-#' @param root character, the root of the graph, which can't have any node pointing to.
-#' @param ugMethod character, determine the UG_method used, usually cmi2ni. Other alternatives including ns/GeneNet/glasso/pcacmi/bayesianglasso
-#' @param dagMethod character, determine the method that calculate the arc direction, usually hc
-#' @param ncores integer,the cores that used to speed up the calculation
+#' @param mem A data matrix with genes in rows and cell types in columns.
+#' @param params Numeric vector of tuning parameters for the undirected-graph
+#'   method, generally ranging from 0 to 1.
+#' @param whiteList A data frame or character vector specifying arcs that must
+#'   be present in the network.
+#' @param blackList A data frame or character vector specifying arcs that must
+#'   not be present in the network.
+#' @param root Character vector of root nodes, which cannot have incoming arcs.
+#' @param ugMethod Character string specifying the undirected-graph method.
+#' @param dagMethod Character string specifying the method used to determine arc
+#'   directions.
+#' @param ncores Number of cores available for computation.
 #'
-#' @return A list of net structures of different parameters
+#' @return A list of network structures, one for each parameter value.
 DG_grid <- function(
   mem,
   params = c(1:100) / 100,
@@ -84,20 +90,25 @@ DG_grid <- function(
   dags
 }
 
-#' DG_methods
+#' Learn a directed graph
 #'
-#' DG_methods is the function that use one parameter to get a directed net struture based on ugMethod and dagMethod
+#' Learn a directed network using one tuning parameter and the selected graph
+#' learning methods.
 #'
-#' @param mem matrix of data, gene as rows and cell types as cols
-#' @param param numeric, the parameters of UG methods, ranging from 0 to 1
-#' @param root character, the root of the graph, which can't have any node pointing to.
-#' @param whiteList data.frame, the list of arcs that must exist in the network
-#' @param blackList data.frame, the list of arcs that can't exist in the network
-#' @param plot logic, if Ture, the net structure of this parameter will be ploted
-#' @param ugMethod character, determine the UG_method used, usually cmi2ni. Other alternatives including ns/GeneNet/glasso/pcacmi/bayesianglasso
-#' @param dagMethod character, determine the method that calculate the arc direction, usually hc
+#' @param mem A data matrix with genes in rows and cell types in columns.
+#' @param param Numeric tuning parameter for the undirected-graph method.
+#' @param root Character vector of root nodes, which cannot have incoming arcs.
+#' @param whiteList A data frame or character vector specifying arcs that must
+#'   be present in the network.
+#' @param blackList A data frame or character vector specifying arcs that must
+#'   not be present in the network.
+#' @param plot Logical; whether to plot the learned network.
+#' @param ugMethod Character string specifying the undirected-graph method.
+#' @param dagMethod Character string specifying the method used to determine arc
+#'   directions.
 #'
-#' @return The net structure learnt under this parameter and method
+#' @return The network structure learned with the specified parameter and
+#'   methods.
 DG_methods <- function(
   mem,
   param = 0.2,
@@ -133,23 +144,29 @@ DG_methods <- function(
 }
 
 
-#' DG_smpl
+#' Learn directed graphs from single-cell samples
 #'
-#' DG_smpl is the function that considers all the parameters in "params" and cell samplings to get a group of net structures based on ugMethod and dagMethod. Compared with DG_grid, DG_smpl is suitable for single cell data in SeuratObject format
+#' Learn network structures across parameter values and cell samples from a
+#' Seurat object.
 #'
-#' @param dat Seurat object for input
-#' @param frac numeric, the fraction of cells for every sampling
-#' @param N_smpl numeric, the total times of sampling
-#' @param params numeric, the parameters used for UG_method
-#' @param whiteList data.frame, the list of arcs that must exist in the network
-#' @param blackList data.frame, the list of arcs that can't exist in the network
-#' @param root character, the root of the graph, which can't have any node pointing to.
-#' @param ugMethod character, determine the UG_method used, usually cmi2ni. Other alternatives including ns/GeneNet/glasso/pcacmi/bayesianglasso
-#' @param dagMethod character, determine the method that calculate the arc direction, usually hc
-#' @param ncores integer,the cores that used to speed up the calculation
-#' @param seed numeric
+#' @param dat A Seurat object.
+#' @param frac Fraction of cells included in each sample.
+#' @param N_smpl Number of cell samples.
+#' @param params Numeric vector of tuning parameters for the undirected-graph
+#'   method.
+#' @param whiteList A data frame or character vector specifying arcs that must
+#'   be present in the network.
+#' @param blackList A data frame or character vector specifying arcs that must
+#'   not be present in the network.
+#' @param root Character vector of root nodes, which cannot have incoming arcs.
+#' @param ugMethod Character string specifying the undirected-graph method.
+#' @param dagMethod Character string specifying the method used to determine arc
+#'   directions.
+#' @param ncores Number of cores used for computation.
+#' @param seed Numeric random seed.
 #'
-#' @return A list of net structures of different parameters and different sampling
+#' @return A list of network structures for each parameter value and cell
+#'   sample.
 DG_smpl <- function(
   dat,
   frac = 0.3,
@@ -214,24 +231,30 @@ DG_smpl <- function(
   dags.smpl
 }
 
-#' BNLearning
+#' Learn Bayesian network structures
 #'
-#' BNLearning is the function that considers all the parameters in "params" and cell samplings to get a group of net structures based on ugMethod and dagMethod. Compared with DG_grid, DG_smpl is suitable for single cell data in SeuratObject format
+#' Learn network structures across parameter values, with optional cell
+#' sampling for single-cell data.
 #'
-#' @param dat Seurat object for input
-#' @param frac numeric, the fraction of cells for every sampling
-#' @param N_smpl numeric, the total times of sampling
-#' @param params numeric, the parameters used for UG_method
-#' @param whiteList data.frame, the list of arcs that must exist in the network
-#' @param blackList data.frame, the list of arcs that can't exist in the network
-#' @param root character, the root of the graph, which can't have any node pointing to.
-#' @param ugMethod character, determine the UG_method used, usually cmi2ni. Other alternatives including ns/GeneNet/glasso/pcacmi/bayesianglasso
-#' @param dagMethod character, determine the method that calculate the arc direction, usually hc
-#' @param ncores integer,the cores that used to speed up the calculation
-#' @param mode character, can be 'single_cell' or 'bulk'
-#' @param seed, numeric
+#' @param dat A Seurat object in single-cell mode or an expression matrix in
+#'   bulk mode.
+#' @param frac Fraction of cells included in each sample.
+#' @param N_smpl Number of cell samples.
+#' @param params Numeric vector of tuning parameters for the undirected-graph
+#'   method.
+#' @param whiteList A data frame or character vector specifying arcs that must
+#'   be present in the network.
+#' @param blackList A data frame or character vector specifying arcs that must
+#'   not be present in the network.
+#' @param root Character vector of root nodes, which cannot have incoming arcs.
+#' @param ugMethod Character string specifying the undirected-graph method.
+#' @param dagMethod Character string specifying the method used to determine arc
+#'   directions.
+#' @param ncores Number of cores used for computation.
+#' @param mode Character string specifying `"single_cell"` or `"bulk"` mode.
+#' @param seed Numeric random seed.
 #'
-#' @return A list of net structures of different parameters and different sampling
+#' @return A list of learned network structures.
 #' @export
 #'
 #' @importFrom magrittr %>%
@@ -285,24 +308,31 @@ BNLearning <- function(
   BNLearn_result
 }
 
-#' Learn the principle DAG from data
+#' Learn the principal DAG from data
 #'
 #' `learnDAG` uses `BNLearning` to generate a set of possible DAGs representing
 #' the differentiation network and analyses these graphs to give the final DAG.
 #'
-#' @param dat Seurat object for input
-#' @param frac numeric, the fraction of cells for every sampling
-#' @param N_smpl numeric, the total times of sampling
-#' @param params numeric, the parameters used for UG_method
-#' @param whiteList data.frame, the list of arcs that must exist in the network
-#' @param blackList data.frame, the list of arcs that can't exist in the network
-#' @param root character, the root of the graph, which can't have any node pointing to.
-#' @param ugMethod character, determine the UG_method used, usually cmi2ni. Other alternatives including ns/GeneNet/glasso/pcacmi/bayesianglasso
-#' @param dagMethod character, determine the method that calculate the arc direction, usually hc
-#' @param ncores integer,the cores that used to speed up the calculation
-#' @param Emin integer, a DAG is adopted only when it has more edges than Emin
-#' @param Emax integer, a DAG is adopted only when it has less edges than Emax
-#' @param mode character, can be 'single_cell' or 'bulk'
+#' @param dat A Seurat object in single-cell mode or an expression matrix in
+#'   bulk mode.
+#' @param frac Fraction of cells included in each sample.
+#' @param N_smpl Number of cell samples.
+#' @param params Numeric vector of tuning parameters for the undirected-graph
+#'   method.
+#' @param whiteList A data frame or character vector specifying arcs that must
+#'   be present in the network.
+#' @param blackList A data frame or character vector specifying arcs that must
+#'   not be present in the network.
+#' @param root Character vector of root nodes, which cannot have incoming arcs.
+#' @param ugMethod Character string specifying the undirected-graph method.
+#' @param dagMethod Character string specifying the method used to determine arc
+#'   directions.
+#' @param ncores Number of cores used for computation.
+#' @param mode Character string specifying `"single_cell"` or `"bulk"` mode.
+#' @param Emin Minimum number of arcs required for a DAG to be retained.
+#' @param Emax Maximum number of arcs allowed for a DAG to be retained.
+#'
+#' @return A `bn` object representing the principal directed acyclic graph.
 #'
 #' @export
 #'
@@ -369,6 +399,16 @@ learnDAG <- function(
   return(outputDAG)
 }
 
+#' Combine DAGs and remove cycles
+#'
+#' Combine learned DAGs and remove cycles from the resulting network.
+#'
+#' @param DAGs A list of learned DAGs.
+#' @param mode Character string specifying `"single_cell"` or `"bulk"` mode.
+#' @param Emin Minimum number of arcs required for a DAG to be retained.
+#' @param Emax Maximum number of arcs allowed for a DAG to be retained.
+#'
+#' @return A `bn` object representing the combined acyclic graph.
 #' @export
 combineAndRmCyc <- function(
   DAGs,
@@ -414,6 +454,12 @@ combineAndRmCyc <- function(
   return(outputDAG)
 }
 
+#' Remove cycles in descending edge-weight order
+#'
+#' @param dS A summarized network structure.
+#'
+#' @return A summarized acyclic network structure.
+#' @keywords internal
 rmCyc_sorted <- function(dS) {
   dS <- rmCyc2(dS)
   ctypes <- unique(union(dS[, "from"], dS[, "to"]))
@@ -431,6 +477,12 @@ rmCyc_sorted <- function(dS) {
   dS[edge_tune, ]
 }
 
+#' Test a network for cycles
+#'
+#' @param dS A summarized network structure.
+#'
+#' @return `TRUE` if the network contains a cycle; otherwise, `FALSE`.
+#' @keywords internal
 hasCyc <- function(dS) {
   Es <- dS[c("from", "to")]
   Es[, 1] <- as.character(Es[, 1])
@@ -447,15 +499,15 @@ hasCyc <- function(dS) {
   return(!all(coords$from > coords$to))
 }
 
-#' bootstrap_index
+#' Generate bootstrap indices
 #'
-#' bootstrap_index: create sampling index for run_diffCoeff
+#' Create sampling indices for `run_diffCoeff()`.
 #'
-#' @param meta character, the cell type information of single cell data
-#' @param bootstrap_times numeric, times of sampling, should be some with "bootstrap_time" in "run_diffCoeff"
-#' @param ratio double, the fraction of cell that are involved in every sample
+#' @param meta A character or factor vector of cell-type labels.
+#' @param bootstrap_times Number of bootstrap samples.
+#' @param ratio Fraction of cells included in each sample.
 #'
-#' @return list of index for diffCoeff
+#' @return A list of sampling-index vectors.
 #' @export
 #'
 bootstrap_index <- function(meta, bootstrap_times, ratio) {
@@ -473,29 +525,81 @@ bootstrap_index <- function(meta, bootstrap_times, ratio) {
   return(index)
 }
 
-#' combineDAGsmpl
+#' Combine DAGs across cell samples
 #'
-#' combineDAGsmpl is a function that combine all the net structures in the dags.smpl according to a filter of Emin and Emax to get the comprehensize network.
+#' Combine the network structures in `dags.smpl` after filtering them by their
+#' numbers of arcs.
 #'
-#' @param dags.smpl list of net structures, the result of DG_smpl
-#' @param Emin integer, the minimal arc number. Any net that have arc number lower that Emin will be filtered
-#' @param Emax integer, the maximal arc number. Any net that have arc number higher that Emax will be filtered
-#' @param ncores integer, number of cores used to speed up the calculation
+#' @param dags.smpl A list of network structures returned by `DG_smpl()`.
+#' @param Emin Minimum number of arcs required for a network to be retained.
+#' @param Emax Maximum number of arcs allowed for a network to be retained.
+#' @param ncores Number of cores used for computation.
+#' @param model_averaging Character string specifying the model-averaging
+#'   strategy: `"joint"` or `"two-tier"`.
 #'
-#' @return information of the summarized net structure
+#' @return A data frame containing the summarized network structure.
 #' @export
-combineDAGsmpl <- function(dags.smpl, Emin = NULL, Emax = NULL, ncores = 64) {
+combineDAGsmpl <- function(
+    dags.smpl,
+    Emin = NULL,
+    Emax = NULL,
+    ncores = 64,
+    model_averaging = c("joint", "two-tier")
+) {
+  
+  model_averaging <- match.arg(model_averaging)
+  
   doParallel::registerDoParallel(cores = ncores)
-  Efreqs.tmp <- foreach::foreach(
-    i_smpl = 1:length(dags.smpl),
-    .combine = rbind
-  ) %dopar%
-    {
-      combineDAGs(dags.smpl[[i_smpl]], Emin = Emin, Emax = Emax)
+  
+  if (model_averaging == "joint") {
+    
+    Efreqs.tmp <- foreach::foreach(
+      i_smpl = 1:length(dags.smpl),
+      .combine = rbind
+    ) %dopar% {
+      combineDAGs(
+        dags.smpl[[i_smpl]],
+        Emin = Emin,
+        Emax = Emax
+      )
     }
+    
+  } else if (model_averaging == "two-tier") {
+    
+    Efreqs.tmp <- foreach::foreach(
+      i_smpl = 1:length(dags.smpl),
+      .combine = rbind
+    ) %dopar% {
+      
+      x <- combineDAGs(
+        dags.smpl[[i_smpl]],
+        Emin = Emin,
+        Emax = Emax
+      )
+      
+      if (is.null(x) ||
+          nrow(x) == 0 ||
+          !all(c("from", "to", "freq") %in% colnames(x))) {
+        return(NULL)
+      }
+      
+      x <- x[
+        x$freq != 0,
+        ,
+        drop = FALSE
+      ]
+      
+      if (nrow(x) == 0) {
+        return(NULL)
+      }
+      
+      rmCyc(x)
+    }
+  }
+  
   Efreqs.tmp %>%
     dplyr::group_by(from, to) %>%
-    dplyr::summarise(freq = sum(freq)) %>%
+    dplyr::summarise(freq = sum(freq), .groups = "drop") %>%
     as.data.frame() %>%
     dplyr::mutate(edge = paste0(from, "~", to)) %>%
     tibble::remove_rownames() %>%
@@ -503,15 +607,15 @@ combineDAGsmpl <- function(dags.smpl, Emin = NULL, Emax = NULL, ncores = 64) {
 }
 
 
-#' combineDAGs
+#' Combine DAGs
 #'
-#' combineDAGs is a function that combine all the net structures in the dags according to a filter of Emin and Emax to get the comprehensize network.
+#' Combine network structures after filtering them by their numbers of arcs.
 #'
-#' @param dags list of net structures, the result of DG_grid
-#' @param Emin integer, the minimal arc number. Any net that have arc number lower that Emin will be filtered
-#' @param Emax integer, the maximal arc number. Any net that have arc number higher that Emax will be filtered
+#' @param dags A list of network structures returned by `DG_grid()`.
+#' @param Emin Minimum number of arcs required for a network to be retained.
+#' @param Emax Maximum number of arcs allowed for a network to be retained.
 #'
-#' @return information of the summarized net structure
+#' @return A data frame containing the summarized network structure.
 #' @export
 combineDAGs <- function(dags, Emin = NULL, Emax = NULL) {
   Efreqs <- foreach::foreach(i = 1:length(dags), .combine = rbind) %do%
@@ -541,17 +645,19 @@ combineDAGs <- function(dags, Emin = NULL, Emax = NULL) {
     tibble::column_to_rownames("edge")
 }
 
-#' trimDAG
+#' Trim a DAG using fitted coefficients
 #'
-#' trimDAG is a function that modify netword structure according to bn.fit results
+#' Modify a network structure according to fitted `bn.fit` coefficients.
 #'
-#' @param dat_tmp matrix of gene expression based on different cell types
-#' @param e A bn.fit net structure
-#' @param min_arc integer, the minimal number of arcs pointing to a node
-#' @param max_arc integer, the maximal number of arcs pointing to a node
-#' @param threshold_value numeric, determine the filter threshold with which arcs are filtered according to bn.fit results
+#' @param dat_tmp A matrix of gene expression values across cell types.
+#' @param e A `bn.fit` network structure.
+#' @param min_arc Minimum number of arcs pointing to a node.
+#' @param max_arc Maximum number of arcs pointing to a node.
+#' @param threshold_value Numeric threshold used to filter arcs according to
+#'   fitted coefficients.
+#' @param plot Logical; whether to plot the trimmed DAG.
 #'
-#' @return A new bn.fit net structure after filter
+#' @return The filtered network structure.
 #' @export
 trimDAG <- function(
   dat_tmp,
@@ -619,13 +725,13 @@ trimDAG <- function(
   return(e)
 }
 
-#' rmCycL
+#' Remove cycles using graph layout
 #'
-#' rmCycL: remove the circles in the network according to the hierarchical structure
+#' Remove cycles from a network according to its hierarchical layout.
 #'
-#' @param dS Summarized net structure
+#' @param dS A summarized network structure.
 #'
-#' @return Summarized net structure, but the circles are removed
+#' @return A summarized network structure with cycles removed.
 #' @export
 rmCycL <- function(dS) {
   Es <- dS[c("from", "to")]
@@ -649,9 +755,9 @@ rmCycL <- function(dS) {
 
 #' Reduce undirected edges to directed edges
 #'
-#' @param dS list
+#' @param dS A summarized network structure.
 #'
-#' @return list
+#' @return A summarized directed network structure.
 rmCyc2 <- function(dS) {
   dS <- dS %>% df2mat()
   dS[dS - t(dS) < 0] <- 0
@@ -660,9 +766,9 @@ rmCyc2 <- function(dS) {
 
 #' Reduce undirected edges and normalize edge weight
 #'
-#' @param dS matrix
+#' @param N A numeric adjacency matrix.
 #'
-#' @return matrix
+#' @return A normalized adjacency matrix.
 norm_mat <- function(N) {
   M <- N
   for (c in 1:nrow(M)) {
@@ -685,11 +791,12 @@ norm_mat <- function(N) {
 
 #' Remove cycles
 #'
-#' rmCyc: remove the circles in the network according to the hierarchical structure and net matrix
+#' Remove cycles according to the hierarchical structure and network matrix.
 #'
-#' @param dS Summarized net structure
+#' @param dS A summarized network structure.
+#' @param method Character string specifying the cycle-removal method.
 #'
-#' @return Summarized net structure, but the circles are removed
+#' @return A summarized network structure with cycles removed.
 #' @export
 rmCyc <- function(dS, method = "sorted") {
   if (method == "sorted") {
@@ -710,11 +817,11 @@ rmCyc <- function(dS, method = "sorted") {
 
 #' Generate edge set
 #'
-#' @param fromSet character
-#' @param toSet character
-#' @param sep character
+#' @param fromSet Character vector of starting nodes.
+#' @param toSet Character vector of ending nodes.
+#' @param sep Character string used to separate node names.
 #'
-#' @return character
+#' @return A character vector of edge names.
 #' @export
 setEdges <- function(fromSet, toSet, sep = "~") {
   edges <- paste(rep(fromSet, each = length(toSet)), toSet, sep = sep)
@@ -723,16 +830,15 @@ setEdges <- function(fromSet, toSet, sep = "~") {
 }
 
 
-#' gem2mem
+#' Summarize a gene-expression matrix
 #'
-#' gem2mem is a function that can summary a single cell expression matrix to a cell type expression matrix using the metadata and method given
-#' Usually, FUN='mean'
+#' Summarize a single-cell expression matrix into a cell-type expression matrix.
 #'
-#' @param gem data.frame of single cell expression
-#' @param meta character, cell type information of single cell expression data
-#' @param FUN character, can be 'mean' or 'median'
+#' @param gem A data frame or matrix of single-cell expression values.
+#' @param meta A character or factor vector of cell-type labels.
+#' @param FUN Character string specifying `"mean"` or `"median"`.
 #'
-#' @return data.frame
+#' @return A data frame of summarized expression values.
 #' @export
 gem2mem <- function(gem = NULL, meta = NULL, FUN = c("mean", "median")) {
   if (is.null(meta)) {
@@ -759,12 +865,12 @@ gem2mem <- function(gem = NULL, meta = NULL, FUN = c("mean", "median")) {
 
 #' Generate blacklist
 #'
-#' @param ug data.frame
-#' @param nodes character
-#' @param root character
-#' @param blackList data.frame
+#' @param ug An undirected graph represented as a data frame.
+#' @param nodes Character vector of node names.
+#' @param root Character vector of root nodes.
+#' @param blackList An optional data frame or character vector of excluded arcs.
 #'
-#' @return data.frame
+#' @return A data frame containing excluded arcs.
 genBList <- function(ug, nodes, root = NULL, blackList = NULL) {
   edgeAll <- setEdges(nodes, nodes, sep = "~")
   edgeCor <- paste0(c(ug$node1, ug$node2), "~", c(ug$node2, ug$node1))
@@ -777,7 +883,12 @@ genBList <- function(ug, nodes, root = NULL, blackList = NULL) {
   blacklist
 }
 
-# Sets altogether
+#' Combine values into a unique vector
+#'
+#' @param ... Vectors to combine.
+#'
+#' @return A vector of unique values.
+#' @keywords internal
 alter <- function(...) {
   vec <- unique(c(rbind(...)))
   return(vec)
@@ -785,9 +896,10 @@ alter <- function(...) {
 
 #' Get N edges
 #'
-#' @param dags list
+#' @param dags A list of network structures.
 #'
-#' @return character
+#' @return A named numeric vector containing the number of arcs in each
+#'   network.
 getNEdges <- function(dags) {
   nEdges <- sapply(
     1:length(dags),
@@ -797,15 +909,15 @@ getNEdges <- function(dags) {
   nEdges
 }
 
-#' df2mat
+#' Convert a network data frame to a matrix
 #'
-#' df2mat: transform a summarized net structure to matrix
+#' Transform a summarized network structure into an adjacency matrix.
 #'
-#' @param DAG Summarized net structure
-#' @param ctypes character, the cell typs used
+#' @param DAG A summarized network structure.
+#' @param ctypes Optional character vector of cell types.
 #' @export
 #'
-#' @return A matrix that is corresponding to the summarized net structure
+#' @return An adjacency matrix corresponding to the summarized network.
 df2mat <- function(DAG, ctypes = NULL) {
   if (class(DAG)[[1]] != "data.frame") {
     DAG <- DAG %>%
@@ -829,14 +941,14 @@ df2mat <- function(DAG, ctypes = NULL) {
   DAG.dm
 }
 
-#' mat2df
+#' Convert a network matrix to a data frame
 #'
-#' mat2df: transform a matrix to a summarized net structure
+#' Transform an adjacency matrix into a summarized network structure.
 #'
-#' @param DAG.dm A matrix that represent a net structure
+#' @param DAG.dm A matrix representing a network structure.
 #' @export
 #'
-#' @return Summarized net structure
+#' @return A data frame containing the summarized network structure.
 mat2df <- function(DAG.dm) {
   DAG <- DAG.dm %>%
     t() %>%
@@ -855,11 +967,13 @@ mat2df <- function(DAG.dm) {
   DAG
 }
 
-#' Transform graph structure from data.frame to bn
+#' Convert a graph data frame to a Bayesian network
 #'
-#' @param dS data.frame, with columns named `from` and `to`
-#' @param node_names character
+#' @param dS A data frame with columns named `from` and `to`.
+#' @param node_names Character vector of node names.
+#' @param plot Logical; whether to plot the network.
 #'
+#' @return A `bn` object.
 #' @export
 df2bn <- function(dS, node_names, plot = TRUE) {
   e <- bnlearn::empty.graph(node_names)
@@ -871,6 +985,11 @@ df2bn <- function(dS, node_names, plot = TRUE) {
 }
 
 #' Extract bn coefficients
+#'
+#' @param dag A `bn` object.
+#' @param data A data frame or matrix used to fit the network.
+#'
+#' @return A data frame containing arcs and their absolute coefficients.
 #' @export
 getCoef <- function(dag, data) {
   fit_res <- bnlearn::bn.fit(dag, data)
@@ -887,6 +1006,13 @@ getCoef <- function(dag, data) {
 }
 
 #' Filter edges by bn coefficients
+#'
+#' @param dag A `bn` object.
+#' @param data A data frame or matrix used to fit the network.
+#' @param ctypes Character vector of node names.
+#' @param threshold Minimum absolute coefficient required to retain an edge.
+#'
+#' @return A filtered `bn` object.
 #' @export
 edgeFilter <- function(dag, data, ctypes, threshold = .1) {
   return(
@@ -897,7 +1023,12 @@ edgeFilter <- function(dag, data, ctypes, threshold = .1) {
   )
 }
 
-# Helper function to parse whitelist/blacklist input
+#' Parse a whitelist or blacklist
+#'
+#' @param edges A data frame or character vector of edges.
+#'
+#' @return A data frame with `from` and `to` columns, or `NULL`.
+#' @keywords internal
 parse_edge_list <- function(edges) {
   if (is.null(edges)) {
     return(NULL)

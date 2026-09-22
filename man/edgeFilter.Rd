@@ -6,6 +6,18 @@
 \usage{
 edgeFilter(dag, data, ctypes, threshold = 0.1)
 }
+\arguments{
+\item{dag}{A \code{bn} object.}
+
+\item{data}{A data frame or matrix used to fit the network.}
+
+\item{ctypes}{Character vector of node names.}
+
+\item{threshold}{Minimum absolute coefficient required to retain an edge.}
+}
+\value{
+A filtered \code{bn} object.
+}
 \description{
 Filter edges by bn coefficients
 }
